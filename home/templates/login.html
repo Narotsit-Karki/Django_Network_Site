@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<body background="{% static 'assets/images/background/auth-bg.png' %}">
+<!--    <div class="row ht-100v flex-row-reverse no-gutters">-->
+        <div class = 'container' style="background: white; margin-top:5%;width:50%; border-radius: 20px;">
+            <div class="signup-form">
+                <div class="auth-logo text-center mb-5">
+                    <div class="row">
+                        <div  style="padding:2%">
+                            <img src="{% static 'assets/images/logo-64x64.png' %}" class="logo-img" alt="Logo">
+                            <h3>Angalo</h3>
+                        </div>
+                        <div class="col-md-10">
+                        </div>
+                    </div>
+                </div>
+                 {% for message in messages %}
+			            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+    		                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        	                <span aria-hidden="true">&times;</span>
+    	                    </button>
+    	                        {{ message | safe }}
+                        </div>
+		        {% endfor %}
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form.username.errors }}
+                            <div class="form-group">
+<!--                                <input type="text" class="form-control" name="" placeholder="Email Address">-->
+
+                                    {{form.username}}
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            {{ form.password.errors }}
+                            <div class="form-group">
+
+                                {{ form.password }}
+
+<!--                                <input type="password" class="form-control" name="" placeholder="Password">-->
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <a href="forgot-password.html">Forgot password?</a>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-control material-checkbox">
+                                <input type="checkbox" class="material-control-input">
+                                <span class="material-control-indicator"></span>
+                                <span class="material-control-description">Remember Me</span>
+                            </label>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary sign-up">Sign In</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 text-center mt-5">
+                            <span class="go-login">Not yet a member? <a href="{% url 'sign-up' %}">Sign Up</a></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+
+
+    <!-- Core -->
+  {% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<body background="{% static 'assets/images/background/auth-bg.png' %}">
+<!--    <div class="row ht-100v flex-row-reverse no-gutters">-->
+        <div class = 'container' style=" background: white; margin-top:1%; width:50%; border-radius:20px;" >
+            <div class="signup-form">
+                <div class="auth-logo text-center mb-5">
+                    <div class="row">
+                        <div class="col-md-2" style="padding:2%;">
+                            <img src="{% static 'assets/images/logo-64x64.png' %}" class="logo-img" alt="Logo">
+
+                                <h3>Angalo</h3>
+                        </div>
+
+                    </div>
+                </div>
+<!--                To show any messages -->
+                  {% for message in messages %}
+			            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+    		                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        	                <span aria-hidden="true">&times;</span>
+    	                    </button>
+    	                        {{ message | safe }}
+                        </div>
+		        {% endfor %}
+
+                <form method="POST" class="pt-1">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input required type="text" class="form-control" name="fname" placeholder="First Name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="lname" placeholder="Last Name">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input required type="email" class="form-control" name="email" placeholder="Email Address">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input required type="text" class="form-control" name="username" placeholder="UserName">
+                            </div>
+                        </div>
+                         <div class="col-md-12">
+                            <div class="form-group">
+                                <select required name="gender" class="form-control">
+                                    <option disabled selected> Gender </option>
+                                    <option value ='male'>Male</option>
+                                    <option value = 'female'>Female</option>
+                                    <option value = 'other'> Other</option>
+                                    <option value = ''> Rather not say</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input required type="text" class="form-control" name="phone" placeholder="Phone Number">
+                            </div>
+                        </div>
+                        <div class = "col-md-4">
+                            <div class ='form-group'>
+                                <select required name="country" class="form-control">
+                                        <option value="" disabled selected>Country </option>
+                                                {% for country in Countries %}
+                                            <option value="{{country}}">{{country}}</option>
+                                        {% endfor %}
+                                </select>
+                                </div>
+                        </div>
+                        <div class = "col-md-8">
+                            <div class = 'form-group'>
+
+                                <input class="form-control" type="text" placeholder="Address" name="address">
+
+                            </div>
+                        </div>
+                          <script>
+                                function datefunction(x){
+                                    x.type = "date";
+
+                                    }
+                            </script>
+                        <div class="col-md-12">
+                            <div class="form-group">
+
+                               <input type="text" name = 'dob' max = '{{max_date}}' min = '{{min_date}}' class = "form-control" placeholder="Date of Birth"
+                                            onfocus="datefunction(this)" onblur="(this.type='text')" >
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input required type="password" class="form-control" name="password" placeholder="Password">
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input required type="password" class="form-control" name="c_password" placeholder="Confirm Password">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <p class="agree-privacy">By clicking the Sign Up button below you agreed to our privacy policy and terms of use of our website.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="go-login">Already a member? <a href="/accounts/login">Sign In</a></span>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary sign-up">Sign Up</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+    <!-- Core -->
+{% endblock %}
