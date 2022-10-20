@@ -10,5 +10,7 @@ urlpatterns = [
     path('fingerprint-settings',FingerPrintSettingsView.as_view() , name = 'fingerprint-settings'),
     path('locations-settings',LocationSettingsView.as_view() , name = 'location-settings'),
 
-    path('add-billing',AddBillingView.as_view() , name = 'add-billing')
+    path('add-billing',AddBillingView.as_view() , name = 'add-billing'),
+    path('set-primary-billing/<slug>',set_primary_billing, name = 'set-primary-billing'),
+    path('remove-billing/<slug>',remove_billing, name = 'remove-billing')
 ]
