@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<body class="messenger">
+    <div class="container-fluid newsfeed d-flex" id="wrapper">
+        <div class="row newsfeed-size f-width">
+            <div class="col-md-12 message-right-side">
+                {% include 'navbar_base.html' %}
+                <div class="row message-right-side-content">
+                    <div class="col-md-12">
+                        <div id="message-frame">
+                            <div class="message-sidepanel">
+                                <div class="message-contacts settings-sidebar">
+                                    <ul class="conversations">
+                                        <h6 class="p-3">General Settings</h6>
+                                        <li class="contact setting-active">
+                                            <a href="{% url 'basic-settings' %}" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/account.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Your Account</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="{% url 'contact-settings' %}" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/contact.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Contact Info</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="#" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/privacy.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Privacy</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <h6 class="p-3">Security &#38; Login</h6>
+                                        <li class="contact">
+                                            <a href="{% url 'password-settings' %}" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/account.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Password</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="#" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/security-question.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Security Question</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="{% url 'fingerprint-settings' %}" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/fingerprint.png' %}" class="settings-icon" alt="Settings left sidebar"> Fingerprint Lock</p>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="{% url 'location-settings' %}" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/location.png' %}" class="settings-icon" alt="Settings left sidebar"> Location</p>
+                                            </a>
+                                        </li>
+                                        <h6 class="p-3">Billing &#38; Payment</h6>
+                                        <li class="contact">
+                                            <a href="{% url 'billing-settings' %}" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/wallet.png' %}" class="settings-icon" alt="Settings left sidebar"> Billing Method</p>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="#" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/credit-card.png' %}" class="settings-icon" alt="Settings left sidebar"> Automatic Payments</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="content">
+                                    {% for message in messages %}
+                                    <center>
+			                                <div class="alert {{ message.tags }} alert-dismissible" role="alert" style="width: 60%;" >
+    		                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        	                                 <span aria-hidden="true">&times;</span>
+    	                                    </button>{{ message | safe }}
+                                            </div>
+                                    </center>
+                                    {% endfor %}
+
+                                <div class="settings-form p-4">
+                                    <h2>Your Account</h2>
+                                    <form method="POST" class="mt-4 settings-form">
+                                        {% csrf_token %}
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="settingsFirstName">First Name</label>
+                                                <input name = 'fname' type="text" class="form-control" id="settingsFirstName" placeholder="First Name" value = "{{request.user.first_name}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="settingsLastName">Last Name</label>
+                                                <input name = 'lname' type="text" class="form-control" id="settingsLastName" placeholder="Last Name" value="{{request.user.last_name}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-row mb-3 align-items-center">
+                                                <div class="col">
+                                                    <label for="settingsUsername">Username</label>
+                                                    <input name = 'username' type="text" class="form-control" id="settingsUsername" aria-describedby="usernameHelp" value="{{request.user.username}}" placeholder="Username">
+                                                    <small id="usernameHelp" class="form-text text-muted">Your public username is the same as your timeline address.</small>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core -->
+{% endblock %}

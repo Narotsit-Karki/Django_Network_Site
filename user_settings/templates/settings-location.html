@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<body class="messenger">
+    <div class="container-fluid newsfeed d-flex" id="wrapper">
+        <div class="row newsfeed-size f-width">
+            <div class="col-md-12 message-right-side">
+                {% include 'navbar_base.html' %}
+
+                <div class="row message-right-side-content">
+                    <div class="col-md-12">
+                        <div id="message-frame">
+                            <div class="message-sidepanel">
+                                <div class="message-contacts settings-sidebar">
+                                    <ul class="conversations">
+                                        <h6 class="p-3">General Settings</h6>
+                                        <li class="contact setting-active">
+                                            <a href="{% url 'basic-settings' %}" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/account.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Your Account</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="{% url 'contact-settings' %}" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/contact.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Contact Info</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="#" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/privacy.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Privacy</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <h6 class="p-3">Security &#38; Login</h6>
+                                        <li class="contact">
+                                            <a href="{% url 'password-settings' %}" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/account.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Password</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="#" class="wrap d-flex align-items-center">
+                                                <img src="{% static 'assets/images/icons/settings/security-question.png' %}" class="settings-icon" alt="Settings left sidebar">
+                                                <div class="meta">
+                                                    <p>Security Question</p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="{% url 'fingerprint-settings' %}" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/fingerprint.png' %}" class="settings-icon" alt="Settings left sidebar"> Fingerprint Lock</p>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="{% url 'location-settings' %}" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/location.png' %}" class="settings-icon" alt="Settings left sidebar"> Location</p>
+                                            </a>
+                                        </li>
+                                        <h6 class="p-3">Billing &#38; Payment</h6>
+                                        <li class="contact">
+                                            <a href="{% url 'billing-settings' %}" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/wallet.png' %}" class="settings-icon" alt="Settings left sidebar"> Billing Method</p>
+                                            </a>
+                                        </li>
+                                        <li class="contact">
+                                            <a href="#" class="wrap d-flex align-items-center">
+                                                <div class="meta"></div>
+                                                <p><img src="{% static 'assets/images/icons/settings/credit-card.png' %}" class="settings-icon" alt="Settings left sidebar"> Automatic Payments</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+<!--
+ Location Info-->
+                            <div class="content">
+                                <div class="settings-form p-4">
+                                    <h2 class="mb-4">Security &#38; Login</h2>
+                                    <div class="login-sessions">
+                                        <h5 class="mb-3 text-muted">Where You're Logged In</h5>
+                                        <div class="media location-card">
+                                            <img class="mr-4" src="{% static 'assets/images/icons/sessions/desktop.png' %}" alt="Generic placeholder image">
+                                            <div class="media-body">
+                                                <h5 class="mt-0 fs-1">Windows PC · Yerevan, Armenia</h5>
+                                                <span class="text-muted">Chrome · </span><span class="text-success">Active now</span>
+                                            </div>
+                                            <div class="dropdown pull-right">
+                                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
+                                                <div class="dropdown-menu dropdown-menu-right nav-drop">
+                                                    <a href="#" class="dropdown-item">Log Out</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="media location-card">
+                                            <img class="mr-4" src="{% static 'assets/images/icons/sessions/android.png' %}" alt="Generic placeholder image">
+                                            <div class="media-body">
+                                                <h5 class="mt-0 fs-1">Android · Yerevan, Armenia</h5>
+                                                <span class="text-muted">Chrome · 21 hours ago</span>
+                                            </div>
+                                            <div class="dropdown pull-right">
+                                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
+                                                <div class="dropdown-menu dropdown-menu-right nav-drop">
+                                                    <a href="#" class="dropdown-item">Log Out</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="media location-card">
+                                            <img class="mr-4" src="{% static 'assets/images/icons/sessions/iphone.png' %}" alt="Generic placeholder image">
+                                            <div class="media-body">
+                                                <h5 class="mt-0 fs-1">iPhone · Gyumri, Armenia</h5>
+                                                <span class="text-muted">Safari · 14 days ago</span>
+                                            </div>
+                                            <div class="dropdown pull-right">
+                                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
+                                                <div class="dropdown-menu dropdown-menu-right nav-drop">
+                                                    <a href="#" class="dropdown-item">Log Out</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="media location-card">
+                                            <img class="mr-4" src="{% static 'assets/images/icons/sessions/tablet.png' %}" alt="Generic placeholder image">
+                                            <div class="media-body">
+                                                <h5 class="mt-0 fs-1">Tablet · Gyumri, Armenia</h5>
+                                                <span class="text-muted">Firefox · 2 months ago</span>
+                                            </div>
+                                            <div class="dropdown pull-right">
+                                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
+                                                <div class="dropdown-menu dropdown-menu-right nav-drop">
+                                                    <a href="#" class="dropdown-item">Log Out</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="location-more d-flex justify-content-between">
+                                            <a href="#">See More</a>
+                                            <a href="#">Log Out Of All Sessions</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core -->
+{% endblock %}

@@ -19,5 +19,9 @@ from django.urls import path ,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('home.urls')),
+    path('settings/',include('user_settings.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
 ]
+
+# url for handlind error
+handler404 = 'home.views.error_404'
