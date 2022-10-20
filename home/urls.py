@@ -12,7 +12,8 @@ urlpatterns = [
     path('login',views.LoginView.as_view(template_name = 'login.html',authentication_form = UserLoginForm)),
     path('profile/<username>',ProfileView.as_view(),name='profile'),
     path('follow-unfollow-user/<username>',follow_unfollow_user,name = 'follow'),
-
+    path('login-user',store_login_info,name = 'login-user'),
+    path('logout/<slug>',logout_information,name = 'logout')
 ]
 
 # creating image url

@@ -11,7 +11,7 @@ class BillingMethod(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     slug = models.CharField(max_length = 500)
     vendor = models.CharField(choices=VENDOR,max_length=400)
-    card_number = models.IntegerField(max_length=500)
+    card_number = models.IntegerField()
     cvc = models.IntegerField()
     card_owner = models.CharField(max_length=500)
     billing_address = models.CharField(max_length = 600)

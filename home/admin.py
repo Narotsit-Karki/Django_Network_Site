@@ -24,3 +24,8 @@ class ProfileUser(admin.ModelAdmin):
     list_display = ('user', 'image_tag', 'dob', 'city', 'gender')
 
 admin.site.register(Profile, ProfileUser)
+
+class LoginSession(admin.ModelAdmin):
+    list_display = ('user', 'login_date', 'device', 'device_type', 'browser')
+
+admin.site.register(LoginSessionInfo,LoginSession)

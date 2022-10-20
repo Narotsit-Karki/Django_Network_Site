@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render , redirect
@@ -5,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import *
 from django.http import Http404
-
+import os
 # Create your views here.
 import datetime
 from django.views.generic.base import View
@@ -21,8 +22,8 @@ with open('home/countries.txt', 'r') as country:
 
 class BaseView(LoginRequiredMixin,View):
     view = dict()
-
-
+    login_url = '/login'
+    redirect_field_name = '/login-info'
     def get_user(self,request):
         try:
             auth_user = Profile.objects.get(user = request.user)
@@ -62,8 +63,6 @@ class SignUpView(View):
         gender = request.POST['gender']
         country , city  = request.POST['country'], request.POST['city']
 
-        print(country,city)
-
         dob = request.POST['dob']
         password , confirm_password = request.POST['password'] , request.POST['password']
 
@@ -74,7 +73,9 @@ class SignUpView(View):
                                                      first_name = fname,
                                                      last_name = lname,
                                                      email = email,
-                                                     password = password)
+                                                     password = password,
+
+                                                     )
                 auth_user.save()
                 # get the recently created user
                 user = User.objects.get(username = username)
@@ -87,7 +88,8 @@ class SignUpView(View):
                                                       city = city,
                                                       country = country,
                                                       dob = dob,
-                                                      gender = gender
+                                                      gender = gender,
+                                                      phone = phone
                                                       )
                 profile_user.save()
 
@@ -157,8 +159,48 @@ def follow_unfollow_user(request,username):
     except ObjectDoesNotExist:
         raise Http404
 
-class SettingsView(BaseView):
-    def get(self,request):
-        self.view
-        self.view['auth_user'] = self.get_user(request)
-        return render(request,'settings.html',self.view)
+
+
+
+
+
+@login_required
+def store_login_info(request):
+    if request.user_agent.is_mobile:
+        device = 'mobile'
+    elif request.user_agent.is_pc:
+        device = 'pc'
+    elif request.user_agent.is_tablet:
+        device = 'tablet'
+    elif request.user_agent.is_bot:
+        device = 'pc'
+    slug = os.urandom(8).hex()
+    login_object = LoginSessionInfo.objects.create(
+        slug = slug,
+        user = request.user,
+        os = request.user_agent.os.family,
+        device = device,
+        device_type = request.user_agent.device.family,
+        browser = request.user_agent.browser.family,
+        active = True,
+        )
+
+    login_object.save()
+
+    request.session['session_slug'] = slug
+
+    return redirect("/")
+
+
+# we set the LoginSessionInfo active field to false to notify user has logged out
+def logout_information(request,slug):
+    try:
+        login_obj = LoginSessionInfo.objects.filter(user = request.user, slug = slug)
+        login_obj.update(active = False)
+    except:
+        pass
+
+    return redirect("/accounts/logout")
+
+
+

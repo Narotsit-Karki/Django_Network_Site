@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!q$v$8j#mlw%rj=x^uxo+9(g=q!%0g#%t73ynj#%@id#3z_n!0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'user_settings',
+    'django_user_agents'
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # a middleware for active users
     'home.activeuser_middleware.ActiveUserMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'social_media.urls'
@@ -129,7 +131,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/login-user'
 LOGOUT_REDIRECT_URL = '/login'
 LOGIN_URL='/login'
 
@@ -159,6 +161,8 @@ CACHES = {
         'LOCATION': 'angalo_cache'
     }
 }
+
+USER_AGENTS_CACHE = 'default'
 
 # Number of seconds of inactivity before a user is marked offline
 USER_ONLINE_TIMEOUT = 300

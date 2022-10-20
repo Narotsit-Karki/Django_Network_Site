@@ -333,7 +333,7 @@
                                     </a>
                                     <a class="dropdown-item" href="{% url 'basic-settings' %}">
                                         <img src="{% static 'assets/images/icons/navbar/gear-1.png' %}" alt="Navbar icon"> Settings</a>
-                                    <a class="dropdown-item logout-btn" href="/accounts/logout">
+                                    <a class="dropdown-item logout-btn" href="/logout/{{request.session.session_slug}}">
                                         <img src="{% static 'assets/images/icons/navbar/logout.png' %}" alt="Navbar icon"> Log Out</a>
                                 </div>
                             </li>

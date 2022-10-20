@@ -89,52 +89,28 @@
                             <div class="content">
                                 <div class="settings-form p-4">
                                     <h2 class="mb-4">Security &#38; Login</h2>
-                                    <div class="login-sessions">
+                                    <div class="login-sessions" style="overflow-y:scroll;height:350px;">
                                         <h5 class="mb-3 text-muted">Where You're Logged In</h5>
-                                        <div class="media location-card">
+                                        {% for login in Login_Sessions %}
+                                        <div class="media location-card" style="background-color:lightgrey; margin:3%; width: 90%;padding:2%">
+                                            {% if login.device == 'pc' %}
                                             <img class="mr-4" src="{% static 'assets/images/icons/sessions/desktop.png' %}" alt="Generic placeholder image">
-                                            <div class="media-body">
-                                                <h5 class="mt-0 fs-1">Windows PC · Yerevan, Armenia</h5>
-                                                <span class="text-muted">Chrome · </span><span class="text-success">Active now</span>
-                                            </div>
-                                            <div class="dropdown pull-right">
-                                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
-                                                <div class="dropdown-menu dropdown-menu-right nav-drop">
-                                                    <a href="#" class="dropdown-item">Log Out</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="media location-card">
+
+                                            {% elif login.device == 'mobile' %}
                                             <img class="mr-4" src="{% static 'assets/images/icons/sessions/android.png' %}" alt="Generic placeholder image">
-                                            <div class="media-body">
-                                                <h5 class="mt-0 fs-1">Android · Yerevan, Armenia</h5>
-                                                <span class="text-muted">Chrome · 21 hours ago</span>
-                                            </div>
-                                            <div class="dropdown pull-right">
-                                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
-                                                <div class="dropdown-menu dropdown-menu-right nav-drop">
-                                                    <a href="#" class="dropdown-item">Log Out</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="media location-card">
-                                            <img class="mr-4" src="{% static 'assets/images/icons/sessions/iphone.png' %}" alt="Generic placeholder image">
-                                            <div class="media-body">
-                                                <h5 class="mt-0 fs-1">iPhone · Gyumri, Armenia</h5>
-                                                <span class="text-muted">Safari · 14 days ago</span>
-                                            </div>
-                                            <div class="dropdown pull-right">
-                                                <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
-                                                <div class="dropdown-menu dropdown-menu-right nav-drop">
-                                                    <a href="#" class="dropdown-item">Log Out</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="media location-card">
+
+                                            {% elif login.device == 'tablet' %}
                                             <img class="mr-4" src="{% static 'assets/images/icons/sessions/tablet.png' %}" alt="Generic placeholder image">
+                                            {% endif %}
                                             <div class="media-body">
-                                                <h5 class="mt-0 fs-1">Tablet · Gyumri, Armenia</h5>
-                                                <span class="text-muted">Firefox · 2 months ago</span>
+                                                <h5 class="mt-0 fs-1">{{login.os}} · {{login.device}}</h5>
+                                                <span class="text-muted">{{login.browser}} · </span>
+                                                {% if login.active %}
+                                                    <span class="text-success">Active now</span>
+                                                {% else %}
+                                                    <span class = 'text-muted'>Last Logged in</span> <span>{{login.login_date}}</span> <span>{{login.login_time}}</span>
+                                                {% endif %}
+
                                             </div>
                                             <div class="dropdown pull-right">
                                                 <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='bx bx-dots-horizontal-rounded'></i></a>
@@ -143,6 +119,8 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        {% endfor %}
+
                                         <div class="location-more d-flex justify-content-between">
                                             <a href="#">See More</a>
                                             <a href="#">Log Out Of All Sessions</a>

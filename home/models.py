@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import datetime
 from django.core.cache import cache
 from social_media import settings
+from django.utils import timezone
 # Create your models here.
 GENDER = (
     ('male' ,'Male'),
@@ -20,6 +21,7 @@ class Profile(models.Model):
     country = models.CharField(max_length=400)
     city = models.CharField(max_length = 500)
     dob = models.DateField()
+    phone = models.IntegerField(blank=True)
     description = models.TextField(blank=True)
     gender = models.CharField(choices=GENDER,max_length=100)
     job = models.TextField(blank = True)
@@ -46,5 +48,19 @@ class Profile(models.Model):
 
 
 
+
+class LoginSessionInfo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    slug = models.CharField(max_length=500)
+    os = models.CharField(max_length=200,blank=True)
+    device = models.CharField(max_length=200,blank = True)
+    login_date = models.DateField(auto_now_add=True)
+    login_time = models.TimeField(auto_now_add=True)
+    device_type = models.CharField(max_length=200,blank=True)
+    browser = models.CharField(max_length=300,blank=True)
+    active = models.BooleanField()
+
+    def __str__(self):
+        return f"< {self.user}: {self.device} : {self.login_date} : {self.login_time}"
 
 
