@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+#page-content-wrapper{
+    background: white;
+    }
+
+.people-nearby .google-maps{
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #f1f2f2;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.people-nearby .google-maps .map{
+  height: 300px;
+  width: 100%;
+  border: none;
+}
+
+.people-nearby .nearby-user{
+  padding: 20px 10px;
+  border-top: 1px solid #f1f2f3;
+  border-bottom: 1px solid #f1f3f2;
+  margin-bottom: 20px;
+}
+
+img.profile-photo-lg{
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+}
+
+</style>
+
+<body class="newsfeed">
+<div class="container-fluid" id="wrapper">
+    <div class="row newsfeed-size">
+        <div class="col-md-12 newsfeed-right-side">
+            {% include 'navbar_base.html' %}
+            <div class="row newsfeed-right-side-content mt-3">
+                <div class="col-md-3 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
+                    <div class="card newsfeed-user-card h-100">
+                        <ul class="list-group list-group-flush newsfeed-left-sidebar">
+                            <li class="list-group-item">
+                                <h6>Home</h6>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="messages.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/message.png' %}" alt="message">
+                                    Messages</a>
+                                <span class="badge badge-primary badge-pill">2</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="groups.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/group.png' %}" alt="group">
+                                    Groups</a>
+                                <span class="badge badge-primary badge-pill">17</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="events.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/event.png' %}" alt="event">
+                                    Events</a>
+                                <span class="badge badge-primary badge-pill">3</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="saved.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/saved.png' %}" alt="saved">
+                                    Saved</a>
+                                <span class="badge badge-primary badge-pill">8</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="find-friends.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/find-friends.png' %}"
+                                        alt="find-friends"> Find Friends</a>
+                                <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="matches.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/matches.png' %}" alt="matches">
+                                    Matches</a>
+                                <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="teams.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/team.png' %}"
+                                        alt="find-friends"> Argon For Teams</a>
+                                <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6 second-section" id="page-content-wrapper">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Search Results <span
+                                class="badge badge-pill badge-primary ml-2">{{ Searched_Users.count }}</span></div>
+                    </div>
+                    <div class="row">
+                        <h3 class='col-md-6 col-sm-6 col-xs-6 fs-8'> Peoples </h3>
+                    </div>
+                    <div class="row" style="overflow-y:scroll;height: 70%;">
+                        <div class="col-md-8">
+                            {% for searched_user in Searched_Users %}
+                            <div class="people-nearby">
+                                <div class="nearby-user">
+                                    <div class="row">
+
+                                        <div class="col-md-2 col-sm-2">
+                                            <a href="{% url 'profile' searched_user.username %}">
+                                                <img src="{{ searched_user.profile_pic.url }}" alt="user"
+                                                     class="profile-photo-lg">
+                                            </a>
+                                        </div>
+                                        <div class="col-md-7 col-sm-7">
+                                            <h5><a href="#" class="profile-link">{{ searched_user.first_name }} {{ searched_user.last_name }}</a></h5>
+                                            <a href="/profile/{{ searched_user.username }}"><span class="text-muted">@{{searched_user.username}}</span></a>
+                                            {% if searched_user.job|length != 0 %}
+                                            <p class="intro-title text-muted"><i
+                                                    class='bx bx-briefcase text-primary'></i> Works at <a href="#">{{search_user.job}}</a>
+                                            </p>
+
+                                            {% endif %}
+                                            <p class="intro-title text-muted"><i class='bx bx-map text-primary'></i>
+                                                Lives in <a href="#">{{searched_user.city}},
+                                                    {{searched_user.country}}</a></p>
+
+
+                                        </div>
+                                        <div class="col-md-3 col-sm-3">
+                                            {% if searched_user not in User_Friend_Requests and searched_user not in User_Friends and searched_user not in Searched_User_Friend_Requests %}
+
+                                            <form action="/send-friend-request" method="GET">
+                                                <input hidden name="addfriend_username"
+                                                       value="{{searched_user.username}}">
+                                                <button type="submit" class="btn btn-primary pull-right"><i
+                                                        class='bx bxs-user-plus'></i> <span
+                                                        class="fs-8">Add Friend</span></button>
+                                            </form>
+                                            {% elif searched_user in User_Friend_Requests %}
+                                            <form action="/send-friend-request" method="GET">
+                                             <input hidden name="addfriend_username"
+                                                       value="{{searched_user.username}}">
+                                                <button type="submit" class="btn btn-primary pull-right" style="width:120px;"><i
+                                                        class='bx bxs-user-check'></i> <span
+                                                        class="fs-8">Request sent</span></button>
+                                            </form>
+                                              {% elif searched_user in Searched_User_Friend_Requests %}
+                                                <form action="/accept-friend-request" method="GET">
+                                             <input hidden name="u_name"
+                                                       value="{{searched_user.username}}">
+                                                <button type="submit" class="btn btn-primary pull-right" style="width:120px;"><i
+                                                        class='bx bxs-user-check'></i> <span class="fs-8"> Accept</span>
+                                                </button>
+                                            </form>
+                                            {% elif searched_user in User_Friends  %}
+                                            <form action="/profile/{{searched_user.username}}" method="GET">
+                                                <input hidden name="addfriend_username"
+                                                       value="{{searched_user.username}}">
+                                                <button type="submit" class="btn btn-primary pull-right"><i
+                                                        class="bx bxs-search"></i> <span
+                                                        class="fs-8">View Friend</span>
+                                                </button>
+                                            </form>
+
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="postModal" aria-labelledby="postModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body post-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-7 post-content">
+                            <img src="https://scontent.fevn1-2.fna.fbcdn.net/v/t1.0-9/56161887_588993861570433_2896723195090436096_n.jpg?_nc_cat=103&_nc_eui2=AeFI0UuTq3uUF_TLEbnZwM-qSRtgOu0HE2JPwW6b4hIki73-2OWYhc7L1MPsYl9cYy-w122CCak-Fxj0TE1a-kjsd-KXzh5QsuvxbW_mg9qqtg&_nc_ht=scontent.fevn1-2.fna&oh=ea44bffa38f368f98f0553c5cef8e455&oe=5D050B05"
+                                 alt="post-image">
+                        </div>
+                        <div class="col-md-5 pr-3">
+                            <div class="media text-muted pr-3 pt-3">
+                                <img src="{% static 'assets/images/users/user-1.jpg' %}" alt="user image"
+                                     class="mr-3 post-modal-user-img">
+                                <div class="media-body">
+                                    <div class="d-flex justify-content-between align-items-center w-100 post-modal-top-user fs-9">
+                                        <a href="#" class="text-gray-dark">John Michael</a>
+                                        <div class="dropdown">
+                                            <a href="#" class="postMoreSettings" role="button" data-toggle="dropdown"
+                                               id="postOptions" aria-haspopup="true" aria-expanded="false">
+                                                <i class='bx bx-dots-horizontal-rounded'></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left postDropdownMenu">
+                                                <a href="#" class="dropdown-item" aria-describedby="savePost">
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <i class='bx bx-bookmark-plus postOptionIcon'></i>
+                                                        </div>
+                                                        <div class="col-md-10">
+                                                            <span class="postOptionTitle">Save post</span>
+                                                            <small id="savePost" class="form-text text-muted">Add this
+                                                                to your saved items</small>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="d-block fs-8">3 hours ago <i class='bx bx-globe ml-3'></i></span>
+                                </div>
+                            </div>
+                            <div class="mt-3 post-modal-caption fs-9">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis voluptatem veritatis
+                                    harum, tenetur, quibusdam voluptatum, incidunt saepe minus maiores ea atque sequi
+                                    illo veniam sint quaerat corporis totam et. Culpa?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Call modal -->
+<div id="callModal" class="modal fade call-modal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog call-modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header align-items-center">
+                <div class="call-status">
+                    <h1 id="callModalLabel" class="modal-title mr-3">Connected</h1>
+                    <span class="online-status bg-success"></span>
+                </div>
+                <div class="modal-options d-flex align-items-center">
+                    <button type="button" class="btn btn-quick-link" id="minimize-call-window">
+                        <i class='bx bx-minus'></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row h-100">
+                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                        <div class="call-user text-center">
+                            <div class="call-user-img-anim">
+                                <img src="{% static 'assets/images/users/user-1.jpg' %}" class="call-user-img"
+                                     alt="Call user image">
+                            </div>
+                            <p class="call-user-name">Name Surename</p>
+                            <p class="text-muted call-time">05:28</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 offset-md-4 d-flex align-items-center justify-content-between call-btn-list">
+                        <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top"
+                           data-title="Disable microphone"><i class='bx bxs-microphone'></i></a>
+                        <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top"
+                           data-title="Enable camera"><i class='bx bxs-video-off'></i></a>
+                        <a href="#" class="btn call-btn drop-call" data-toggle="tooltip" data-placement="top"
+                           data-title="End call" data-dismiss="modal" aria-label="Close"><i
+                                class='bx bxs-phone'></i></a>
+                        <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top"
+                           data-title="Share Screen"><i class='bx bx-laptop'></i></a>
+                        <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top"
+                           data-title="Dark mode"><i class='bx bx-moon'></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END call modal -->
+{% endblock %}
+<!-- Core -->
+

@@ -5,11 +5,21 @@ from django.shortcuts import render , redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import *
-from django.http import Http404
+from django.http import Http404, response, HttpResponse
 import os
 # Create your views here.
 import datetime
 from django.views.generic.base import View
+from functools import reduce
+import operator
+from django.db.models import Q
+from notifications.signals import notify
+
+notification_messsage = {
+    'friend-request-send' : 'sent you a friend request',
+    'friend-request-accept': 'accepted your friend request',
+    'following-you': 'started following you',
+}
 
 # a function just to get all countries as a list
 countries = []
@@ -24,37 +34,35 @@ class BaseView(LoginRequiredMixin,View):
     view = dict()
     login_url = '/login'
     redirect_field_name = '/login-info'
-    def get_user(self,request):
-        try:
-            auth_user = Profile.objects.get(user = request.user)
-            return auth_user
-        except ObjectDoesNotExist:
-            raise Http404
+
 
 
 
 class HomeView(BaseView):
 
     def get(self,request):
-        self.view
-        try:
-            auth_user = Profile.objects.get(user = request.user)
-            self.view['auth_user'] = auth_user
-            return render(request, 'index.html', self.view)
-
-        except ObjectDoesNotExist:
-            raise Http404
+        user = UserProfile.objects.get(username = request.user.username)
+        self.view['User'] = user
+        return render(request, 'index.html',self.view)
 
 
 
+@login_required
+def mark_as_read(request):
+    if request.method == 'GET':
+        request.user.notifications.mark_all_as_deleted()
+        notification = request.user.notifications.deleted()
+        notification.delete()
 
+    return HttpResponse('marked as read')
 
 
 class SignUpView(View):
     def post(self,request,*args,**kwargs):
         self.add_new_user(request)
-
+        messages.success(request, 'Signed Up Successfully')
         return redirect('/login')
+
 
     def add_new_user(self,request):
         fname , lname = request.POST['fname'] , request.POST['lname']
@@ -67,41 +75,29 @@ class SignUpView(View):
         password , confirm_password = request.POST['password'] , request.POST['password']
 
         if password == confirm_password:
-            if not User.objects.filter(username = username,email = email).exists():
-                # creating a new auth user
-                auth_user = User.objects.create_user(username = username,
-                                                     first_name = fname,
-                                                     last_name = lname,
-                                                     email = email,
-                                                     password = password,
-
-                                                     )
-                auth_user.save()
-                # get the recently created user
-                user = User.objects.get(username = username)
-
-                profile_user = Profile.objects.create(user = user,
-                                                      username = username,
-                                                      fname = fname,
-                                                      lname = lname,
-                                                      email = email,
-                                                      city = city,
-                                                      country = country,
-                                                      dob = dob,
-                                                      gender = gender,
-                                                      phone = phone
-                                                      )
+            if not UserProfile.objects.filter(username = username,email = email).exists():
+                profile_user = UserProfile.objects.create_user(
+                    username = username,
+                    first_name = fname,
+                    last_name = lname,
+                    email = email,
+                    city = city,
+                    country = country,
+                    dob = dob,
+                    gender = gender,
+                    phone = phone,
+                    password = password
+                    )
                 profile_user.save()
 
             else:
                 messages.error(request,'username or email already exists')
-                return redirect('/')
+                return redirect('/signup')
         else:
             messages.error(request,'Enter Same password on both fields')
             return redirect('/signup')
 
 
-        messages.success(request ,'Signed Up Successfully')
 
     def get(self,request):
 
@@ -120,21 +116,21 @@ class ProfileView(BaseView):
 
     def get_user(self , request , username):
         try:
-            user_obj = Profile.objects.get(username = username)
-            auth_user = Profile.objects.get(user = request.user)
+            user_obj = UserProfile.objects.get(username = username)
             # see if current user is following the user
             following = False
-            if Profile.objects.filter(following__in = [user_obj]).exists():
+
+            if UserProfile.objects.filter(username = user_obj.username , following__in = [user_obj]).exists():
                 following = True
 
-            return user_obj , auth_user , following
+            return user_obj , following
 
         except ObjectDoesNotExist:
             raise Http404
 
     def get(self,request,username):
         self.view
-        self.view['user_obj'] , self.view['auth_user'], self.view['following'] = self.get_user(request,username)
+        self.view['User_Profile'] , self.view['Following'] = self.get_user(request,username)
         return render(request, 'profile.html',self.view)
 
 
@@ -144,19 +140,22 @@ def error_404(request,exception):
 
 
 
-def follow_unfollow_user(request,username):
+def follow_unfollow_user(request):
+
     try:
-        follow_user = Profile.objects.get(username = username)
-        cur_auth_user = Profile.objects.get(user = request.user)
-        if Profile.objects.filter(following__in = [follow_user]).exists():
-            cur_auth_user.following.remove(follow_user)
+        username = request.get('username')
+        follow_user = UserProfile.objects.get(username = username)
+
+        if UserProfile.objects.filter(following__in = [follow_user]).exists():
+            request.user.following.remove(follow_user)
 
         else:
-            cur_auth_user.following.add(follow_user)
+            request.user.following.add(follow_user)
 
-        cur_auth_user.save()
+        request.user.save()
         return redirect(f'/profile/{username}')
-    except ObjectDoesNotExist:
+
+    except Exception:
         raise Http404
 
 
@@ -164,6 +163,103 @@ def follow_unfollow_user(request,username):
 
 
 
+
+
+class SearchView(BaseView):
+
+    def search_algorithm(self, query, request):
+        keyword = set()
+
+        if "," in query:
+            for word in query.split(","):
+                keyword.add(word.strip(" "))
+
+        elif " " in query:
+            for word in query.split(" "):
+                keyword.add(word)
+        else:
+            keyword = {query}
+
+        # getting necessary search result profiles
+        profiles = UserProfile.objects.exclude(username = request.user.username).filter(reduce(operator.and_, ( Q(username__icontains = x) for x in keyword)))
+
+        # get current users friend list to see if searched user is present or not
+        user_friend_requests = FriendRequest.objects.filter(to_user__in = list(profiles),from_user = request.user)
+
+        if user_friend_requests.count() == 0:
+            self.view['User_Friend_Requests'] = user_friend_requests
+        else:
+            self.view['User_Friend_Requests'] = UserProfile.objects.filter(reduce(operator.and_,( Q(username = f.to_user.username) for f in user_friend_requests)))
+
+        #get searched users friend requests to see if current user is present there or not
+        searched_user_friend_requests = FriendRequest.objects.filter(from_user__in = list(profiles),to_user = request.user)
+
+        if searched_user_friend_requests.count() == 0:
+            self.view['Searched_User_Friend_Requests'] = searched_user_friend_requests
+        else:
+            self.view['Searched_User_Friend_Requests'] = UserProfile.objects.filter(
+                reduce(operator.and_, (Q(username=f.from_user.username) for f in searched_user_friend_requests)))
+
+        self.view['Searched_Users'] = profiles
+
+
+    def get(self,request):
+        search = request.GET['search']
+        #getting User Friends as  query set for searching purpose
+        self.view['User_Friends'] = request.user.friends.get_queryset()
+        self.search_algorithm(query=search,request = request)
+        return render(request,'search.html',self.view)
+
+
+
+
+@login_required
+def send_friend_request_or_remove(request):
+
+    if request.method == "GET":
+        username = request.GET['addfriend_username']
+        from_user = request.user
+        to_user = UserProfile.objects.get(username = username)
+
+        # check to see if not both users are friends already
+        if UserProfile.objects.filter(username = from_user.username , friends__in = [to_user]).exists() or UserProfile.objects.filter(username = to_user.username , friends__in = [from_user]).exists():
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        # send friend request
+        friend_request , created = FriendRequest.objects.get_or_create(from_user = from_user , to_user = to_user)
+
+       # request was already sent now we delete it
+        if not created:
+            friend_request.delete()
+        else:
+            notify.send(sender = from_user , recipient = to_user,verb ='Message', description = notification_messsage['friend-request-send'])
+
+
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def accept_friend_request(request):
+
+    if request.method == 'GET':
+        try:
+            from_username = request.GET['u_name']
+            from_user = UserProfile.objects.get(username = from_username)
+            friend_request = FriendRequest.objects.get(from_user = from_user, to_user = request.user)
+            friend_request.from_user.friends.add(friend_request.to_user)
+            friend_request.to_user.friends.add(friend_request.from_user)
+            notify.send(sender = friend_request.to_user , recipient = friend_request.from_user , verb = 'pill', description = notification_messsage['friend-request-accept'])
+            request.user.notifications.mark_all_as_read()
+            friend_request.delete()
+        except Exception:
+            pass
+
+    return redirect(request.META.get("HTTP_REFERER"))
+
+
+
+
+#
 @login_required
 def store_login_info(request):
     if request.user_agent.is_mobile:
@@ -174,6 +270,7 @@ def store_login_info(request):
         device = 'tablet'
     elif request.user_agent.is_bot:
         device = 'pc'
+
     slug = os.urandom(8).hex()
     login_object = LoginSessionInfo.objects.create(
         slug = slug,

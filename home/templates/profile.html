@@ -25,7 +25,7 @@
                                     <div class="text-center">
                                         <div class="profile-img w-shadow">
                                             <div class="profile-img-overlay"></div>
-                                            <img src="{{user_obj.profile_pic.url }}" alt="Avatar" class="avatar img-circle">
+                                            <img src="{{ User_Profile.profile_pic.url }}" alt="Avatar" class="avatar img-circle">
                                             <div class="profile-img-caption">
                                                 <label for="updateProfilePic" class="upload">
                                                     <i class='bx bxs-camera'></i> Update
@@ -33,17 +33,23 @@
                                                 </label>
                                             </div>
                                         </div>
-                                        <p class="profile-fullname mt-3">{{user_obj.user.first_name}} {{user_obj.user.last_name}}</p>
-                                        <p class="profile-username mb-3 text-muted">@{{user_obj.user.username}}</p>
+                                        <p class="profile-fullname mt-3">{{User_Profile.first_name}} {{User_Profile.last_name}}</p>
+                                        <p class="profile-username mb-3 text-muted">@{{User_Profile.username}}</p>
                                     </div>
                                     <div class="intro mt-4">
                                         <div class="d-flex">
-                                            {% if user_obj.user != request.user %}
+                                            {% if User_Profile != request.user %}
                                                 {% if following %}
-                                                    <button onclick="location.href = '/follow-unfollow-user/{{user_obj.username}}'" type="button" class="btn-outline-success btn-follow mr-3"><i class='bx bx-check'></i> UnFollow</button>
-                                                {% else %}
-                                                    <button onclick="location.href = '/follow-unfollow-user/{{user_obj.username}}'" type="button" class="btn btn-follow mr-3"><i class='bx bx-plus'></i> Follow</button>
-                                                {% endif %}
+                                                    <form method = "GET" action = "/follow-unfollow-user">
+                                                        <input hidden value = '{{User_Profile.username}}' name = "username">
+                                                        <button type="button" class="btn-outline-success btn-follow mr-3"><i class='bx bx-check'></i> UnFollow</button>
+                                                    </form>
+                                                        {% else %}
+                                                        <form method = "GET" action = "/follow-unfollow-user">
+                                                            <input hidden value = '{{User_Profile.username}}' name = "username">
+                                                            <button type="button" class="btn btn-follow mr-3"><i class='bx bx-plus'></i> Follow</button>
+                                                        </form>
+                                                    {% endif %}
 
                                                 <button type="button" class="btn btn-start-chat" data-toggle="modal" data-target="#newMessageModal"><i class='bx bxs-message-rounded'></i> <span class="fs-8">Message</span></button>
 
@@ -67,23 +73,23 @@
                                             <h3 class="intro-about">Intro</h3>
                                         </div>
                                         <div class="intro-item d-flex justify-content-between align-items-center">
-                                            {% if user_obj.job != ''%}
-                                            <p class="intro-title text-muted"><i class='bx bx-briefcase text-primary'></i> Web Developer at <a href="#">Company Name</a></p>
+                                            {% if User_Profile.job|length != 0%}
+                                            <p class="intro-title text-muted"><i class='bx bx-briefcase text-primary'></i> Job <a href="#">{{ User_Profile.job }}</a></p>
                                             {% endif %}
                                         </div>
                                         <div class="intro-item d-flex justify-content-between align-items-center">
-                                            <p class="intro-title text-muted"><i class='bx bx-map text-primary'></i> Lives in <a href="#">{{user_obj.city}}, {{user_obj.country}}</a></p>
+                                            <p class="intro-title text-muted"><i class='bx bx-map text-primary'></i> Lives in <a href="#">{{User_Profile.city}}, {{User_Profile.country}}</a></p>
                                         </div>
                                         <div class="intro-item d-flex justify-content-between align-items-center">
                                             <p class="intro-title text-muted"><i class='bx bx-time text-primary'></i> Last Login
-                                                {% if user_obj.online %}
+                                                {% if User_Profile.online %}
                                                     <a href="#">Online <span class="ml-1 online-status bg-success"></span></a>
                                                 {% else %}
                                                     <a href="#">Offline <span class="ml-1 online-status bg-secondary"></span></a>
                                             </p>
                                             {% endif %}
                                         </div>
-                                        {% if request.user.username == user_obj.username %}
+                                        {% if request.user == User_Profile %}
                                         <div class="intro-item d-flex justify-content-between align-items-center">
                                             <a href="#" class="btn btn-quick-link join-group-btn border w-100">Edit Details</a>
                                         </div>
@@ -152,7 +158,7 @@
                                                 <div class="col-md-3 col-sm-12">
                                                     <h6 class="timeline-title">Posts</h6>
                                                 </div>
-                                                {% if user_obj.user == request.user %}
+                                                {% if User_Profile.user == request.user %}
                                                 <div class="col-md-9 col-sm-12">
                                                     <div class="timeline-manage">
                                                         <button type="button" class="btn btn-quick-link join-group-btn border btn-sm tmo-buttons"><i class='bx bxs-cog'></i> Manage Posts</button>
@@ -164,10 +170,10 @@
                                             </div>
                                             <div class="post border-bottom p-3 bg-white w-shadow">
                                                 <div class="media text-muted pt-3">
-                                                    <img src="{{ user_obj.profile_pic.url }}" alt="Online user" class="mr-3 post-user-image">
+                                                    <img src="{{ User_Profile.profile_pic.url }}" alt="Online user" class="mr-3 post-user-image">
                                                     <div class="media-body pb-3 mb-0 small lh-125">
                                                         <div class="d-flex justify-content-between align-items-center w-100">
-                                                            <span class="post-type text-muted"><a href="#" class="text-gray-dark post-user-name mr-2">{{user_obj.fname}} {{user_obj.lname}}</a> updated cover photo</span>
+                                                            <span class="post-type text-muted"><a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.fname}} {{User_Profile.lname}}</a> updated cover photo</span>
                                                             <div class="dropdown">
                                                                 <a href="#" class="post-more-settings" role="button" data-toggle="dropdown" id="postOptions" aria-haspopup="true" aria-expanded="false">
                                                                     <i class='bx bx-dots-horizontal-rounded'></i>

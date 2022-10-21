@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'user_settings',
-    'django_user_agents'
+    'django_user_agents',
+    'notifications',
+
 ]
 
 MIDDLEWARE = [
@@ -153,6 +155,9 @@ MEDIA_URL = '/media/'
 # Path where media is stored
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+#neccessary for abstract users
+AUTH_USER_MODEL = 'home.UserProfile'
+swappable = 'AUTH_USER_MODEL'
 
 # Setup caching per Django docs. In actuality,
 CACHES = {
@@ -170,3 +175,9 @@ USER_ONLINE_TIMEOUT = 300
 # Number of seconds that we will keep track of inactive users for before
 # their last seen is removed from the cache
 USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+
+
+# for deleting notifications
+DJANGO_NOTIFICATIONS_CONFIG = {
+    'SOFT_DELETE':False,
+}

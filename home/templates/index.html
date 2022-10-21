@@ -45,17 +45,14 @@
                                     <a href="teams.html" class="sidebar-item"><img src="{% static 'assets/images/icons/left-sidebar/team.png' %}" alt="find-friends"> Argon For Teams</a>
                                     <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center newsLink">
-                                    <a href="https://github.com/ArtMin96/argon-social" target="_blank" class="sidebar-item"><img src="{% static 'assets/images/icons/left-sidebar/news.png' %}" alt="find-friends"> News</a>
-                                    <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
-                                </li>
+
                             </ul>
                         </div>
                     </div>
                     <div class="col-md-6 second-section" id="page-content-wrapper">
                         <div class="mb-3">
                             <div class="btn-group d-flex">
-                                <a href="index.html" class="btn btn-quick-links mr-3 ql-active">
+                                <a href="/" class="btn btn-quick-links mr-3 ql-active">
                                     <img src="{% static 'assets/images/icons/theme/speech.png' %}" class="mr-2" alt="quick links icon">
                                     <span class="fs-8">Speech</span>
                                 </a>
@@ -73,7 +70,7 @@
                             <li class="media post-form w-shadow">
                                 <div class="media-body">
                                     <div class="form-group post-input">
-                                        <textarea class="form-control" id="postForm" rows="2" placeholder="What's on your mind, {{request.user.first_name}}?"></textarea>
+                                        <textarea class="form-control" id="postForm" rows="2" placeholder="What's on your mind, {{request.user.fname}}?"></textarea>
                                     </div>
                                     <div class="row post-form-group">
                                         <div class="col-md-9">
@@ -786,28 +783,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 third-section">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <div class="weather-card-header d-flex justify-content-between align-items-center">
-                                    <p class="fs-1 mb-0">11:37 PM</p>
-                                    <a href="#" class="btn text-primary">California, CA <i class='bx bx-chevron-down'></i></a>
-                                </div>
-                                <div class="weather-quick align-items-center mt-4">
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <img src="{% static 'assets/images/icons/weather/sun.png' %}" width="40" height="40" alt="Weather icon">
-                                            <h1 class="weather-card display-4 ml-3">28<span class="text-muted">&deg;</span></h1>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <p class="mb-0 fs-1" ><i class='bx bx-droplet'></i> 15%</p>
-                                            <p class="mb-0 fs-1" ><i class='bx bx-flag'></i> 10km/h</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

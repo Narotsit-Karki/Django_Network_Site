@@ -21,6 +21,8 @@ urlpatterns = [
     path('',include('home.urls')),
     path('settings/',include('user_settings.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
+    # for notifications
+    path('inbox/notifications/',include('notifications.urls',namespace='notifications'))
 ]
 
 # url for handlind error

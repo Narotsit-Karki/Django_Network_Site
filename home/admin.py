@@ -21,11 +21,11 @@ class ProfileUser(admin.ModelAdmin):
                 ''' )
 
     image_tag.short_description = 'Profile Pic'
-    list_display = ('user', 'image_tag', 'dob', 'city', 'gender')
+    list_display = ('image_tag', 'username', 'email','is_staff','country')
 
-admin.site.register(Profile, ProfileUser)
+admin.site.register(UserProfile, ProfileUser)
 
 class LoginSession(admin.ModelAdmin):
-    list_display = ('user', 'login_date', 'device', 'device_type', 'browser')
+    list_display = ('user', 'login_date', 'device', 'device_type', 'browser' )
 
 admin.site.register(LoginSessionInfo,LoginSession)

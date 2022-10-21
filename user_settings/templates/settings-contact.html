@@ -91,7 +91,7 @@
                                     <center>
 			                                <div class="alert {{ message.tags }} alert-dismissible" role="alert" style="width: 60%;" >
     		                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        	                                 <span aria-hidden="true">&times;</span>
+        	                                 <span aria-hidden="true">&times</span>
     	                                    </button>{{ message | safe }}
                                             </div>
                                     </center>
@@ -104,14 +104,14 @@
                                             <div class="col-md-8">
                                                 <div class="form-group">
                                                     <label for="settingsAddress">City</label>
-                                                    <input type="text" name = 'city' class="form-control" id="settingsAddress" placeholder="City" value ='{{auth_user.city}}' >
+                                                    <input type="text" name = 'city' class="form-control" id="settingsAddress" placeholder="City" value ='{{request.user.city}}' >
                                                 </div>
                                             </div>
                                               <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="settingsAddress">Country</label>
                                                      <select required name="country_new" class="form-control">
-                                                         <option value="{{auth_user.country}}" selected> {{auth_user.country}} </option>
+                                                         <option value="{{auth_user.country}}" selected> {{request.user.country}} </option>
                                                          {% for country in Countries %}
 
                                                             <option value="{{country}}">{{country}}</option>
@@ -124,14 +124,14 @@
                                             <div class="col-md-8">
                                                 <div class="form-group">
                                                     <label for="settingsPhoneNumber">Phone Number</label>
-                                                    <input type="number"  name = "phone" class="form-control" id="settingsPhoneNumber" placeholder="Phone Number" value="{{auth_user.phone}}">
+                                                    <input type="number"  name = "phone" class="form-control" id="settingsPhoneNumber" placeholder="Phone Number" value="{{request.user.phone}}">
                                                 </div>
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="form-row mb-3 align-items-center">
                                                     <div class="col">
                                                         <label for="settingsEmailAddress">Email Address</label>
-                                                        <input value = "{{auth_user.email }}" type="email" name = "email" class="form-control" id="settingsEmailAddress" aria-describedby="emailHelp" value="emailaddress@gmail.com" placeholder="Email Address">
+                                                        <input value = "{{request.user.email }}" type="email" name = "email" class="form-control" id="settingsEmailAddress" aria-describedby="emailHelp" value="emailaddress@gmail.com" placeholder="Email Address">
                                                         <small id="emailHelp" class="form-text text-muted">Updating this email will only change where you receive notifications.</small>
                                                     </div>
 
