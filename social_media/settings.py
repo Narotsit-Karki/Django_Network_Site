@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #main apps
     'home',
+    #handles user settinfs
     'user_settings',
+    #handles all posts in our app
+    'post_app',
+    # extra added apps
+
     'django_user_agents',
     'notifications',
 
@@ -70,6 +77,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                # for handling files like video or others
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -178,6 +188,6 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 
 
 # for deleting notifications
-DJANGO_NOTIFICATIONS_CONFIG = {
-    'SOFT_DELETE':False,
-}
+# DJANGO_NOTIFICATIONS_CONFIG = {
+#     'SOFT_DELETE': False,
+# }

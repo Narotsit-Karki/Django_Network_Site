@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django_resized import ResizedImageField
 import datetime
 from django.core.cache import cache
 from social_media import settings
@@ -24,7 +25,7 @@ class UserProfile(AbstractUser):
     description = models.TextField(blank=True, null = True)
     gender = models.CharField(choices=GENDER,max_length=100, null = True)
     job = models.TextField(blank = True, null = True)
-    profile_pic = models.ImageField(upload_to = 'media/profile_pic', default = 'default.png', null = True)
+    profile_pic = ResizedImageField(size = [ 512, 512],upload_to = 'profile_pic', default = 'default.png', null = True ,force_format = 'PNG')
 
     following = models.ManyToManyField('UserProfile',symmetrical=False, blank = True, related_name= 'user_followings')
     friends = models.ManyToManyField('UserProfile', symmetrical=False, blank=True , related_name= 'user_friends')

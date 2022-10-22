@@ -21,6 +21,7 @@ urlpatterns = [
     path('',include('home.urls')),
     path('settings/',include('user_settings.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
+    path('posts/',include('post_app.urls')),
     # for notifications
     path('inbox/notifications/',include('notifications.urls',namespace='notifications'))
 ]

@@ -219,64 +219,45 @@
                             <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Notifications <span id ="not-badge-inner"
                                     class="badge badge-pill badge-primary ml-2">{% notifications_unread %}</span></div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                <a href = '#' id ="#notific" class="notify-right-icon">
+                                <a href = '/mark-as-read' id ="#notific"  class="notify-right-icon">
                                     Mark All as Read
                                 </a>
-                                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-                                <script type="text/javascript">
-                                    $('.notify-right-icon').click(
-                                        function(){
-                                                $.ajax(
-                                                {
-                                                type:"GET",
-                                                url: "/mark-as-read",
-                                                data:{ },
-                                        success: function( data )
-                                                {
-                                                $( '#not-badge-outer' ).text(0);
-                                                $( '#not-badge-inner').text(0);
-                                                }
-                                                }
-                                            )
-                                            });
-
-                                </script>
                             </div>
                         </div>
                     </div>
                     <!-- end notify title -->
                     <!-- notify content -->
                     <div class="drop-content">
-                        {% for notification in request.user.notifications.unread %}
+                        {% for notification in request.user.notifications.all %}
                         <li>
                             <div class="col-md-2 col-sm-2 col-xs-2">
                                 <div class="notify-img">
-                                    <img src="{{notification.actor.profile_pic.url }}" alt="notification user image">
+                                    <img not-id="{{notification.id}}" src="{{notification.actor.profile_pic.url }}" alt="notification user image">
                                 </div>
                             </div>
                             <div class="col-md-10 col-sm-10 col-xs-10">
                                 <a href="#" class="notification-user">{{notification.actor.username}}</a> <span
                                     class="notification-type" style="font-size:0.8rem;">{{notification.description}}</span><a href="#" class="notification-for"></a>
-                                <a href="#" class="notify-right-icon">
-                                    <i class='bx bx-radio-circle-marked'></i>
-                                </a>
+
+                                {% if notification in request.user.notifications.read %}
+                                    <a href="#" class="notify-right-icon mt-4">
+                                        <i class='bx bx-check'></i>
+                                    </a>
+                                {% else %}
+                                    <a href="#" class="notify-right-icon mt-4">
+                                        <i class='bx bx-radio-circle-marked'></i>
+                                    </a>
+                                {% endif %}
+
                                 <p class="time">
                                     <span class="badge badge-pill badge-primary"><i class='bx bxs-group'></i></span>
                                     {{notification.timestamp}}
                                             {% if 'sent you a friend request' in notification.description %}
-                                            {% if notification.unread %}
-                                                    <form action="/accept-friend-request" method="POST">
-                                                        <input name = "u_name" hidden value="{{notification.actor.username}}">
-                                                        <button type = 'submit' class = "btn btn-primary btn-sm" id = 'accept-friend' style="font-size:0.8rem;">Accept</button>
-                                                    </form>
-                                            {% else %}
-                                                    <button class = "btn btn-success btn-sm disabled" style="font-size:0.8rem;"> Accepted </button>
+                                                <button onclick="location.href ='/profile/{{notification.actor.username}}'" type ='submit' class = "btn btn-primary btn-sm" id = 'accept-friend' style="border-radius:50px;font-size:0.8rem;"><i class='fa fa-eye'></i> view</button>
                                             {% endif %}
+                                        </p>
 
-                                    {% endif %}
-                                </p>
-
-                            </div>
+                                    </div>
                         </li>
                         {% endfor %}
 

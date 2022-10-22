@@ -49,12 +49,8 @@ class HomeView(BaseView):
 
 @login_required
 def mark_as_read(request):
-    if request.method == 'GET':
-        request.user.notifications.mark_all_as_deleted()
-        notification = request.user.notifications.deleted()
-        notification.delete()
-
-    return HttpResponse('marked as read')
+    request.user.notifications.mark_all_as_read()
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 class SignUpView(View):
@@ -119,18 +115,29 @@ class ProfileView(BaseView):
             user_obj = UserProfile.objects.get(username = username)
             # see if current user is following the user
             following = False
+            friend = False
+            sent_friend_request = False
 
-            if UserProfile.objects.filter(username = user_obj.username , following__in = [user_obj]).exists():
+            if UserProfile.objects.filter(username = request.user.username , following__in = [user_obj]).exists():
                 following = True
 
-            return user_obj , following
+            if UserProfile.objects.filter(username = user_obj.username, friends__in = [request.user]).exists():
+                friend = True
+
+            if FriendRequest.objects.filter(from_user = request.user,to_user = user_obj).exists():
+
+                sent_friend_request = True
+
+            return user_obj , following , friend , sent_friend_request
 
         except ObjectDoesNotExist:
             raise Http404
 
     def get(self,request,username):
         self.view
-        self.view['User_Profile'] , self.view['Following'] = self.get_user(request,username)
+
+        self.view['User_Profile'] , self.view['Following'] , self.view['Friend'] , self.view['Friend_Requst_Sent'] = self.get_user(request,username)
+
         return render(request, 'profile.html',self.view)
 
 
@@ -139,24 +146,23 @@ def error_404(request,exception):
     return render(request,'404.html')
 
 
-
+@login_required
 def follow_unfollow_user(request):
-
-    try:
-        username = request.get('username')
+    if request.method == "GET":
+        username = request.GET['username']
         follow_user = UserProfile.objects.get(username = username)
-
-        if UserProfile.objects.filter(following__in = [follow_user]).exists():
+        # if already followed unfollow else follow
+        if UserProfile.objects.filter(username = request.user.username,following__in = [follow_user]).exists():
             request.user.following.remove(follow_user)
-
         else:
+            notify.send(sender = request.user , recipient = follow_user , verb = 'pill', description = notification_messsage['following-you'])
             request.user.following.add(follow_user)
 
         request.user.save()
+
         return redirect(f'/profile/{username}')
 
-    except Exception:
-        raise Http404
+
 
 
 
@@ -249,7 +255,7 @@ def accept_friend_request(request):
             friend_request.from_user.friends.add(friend_request.to_user)
             friend_request.to_user.friends.add(friend_request.from_user)
             notify.send(sender = friend_request.to_user , recipient = friend_request.from_user , verb = 'pill', description = notification_messsage['friend-request-accept'])
-            request.user.notifications.mark_all_as_read()
+
             friend_request.delete()
         except Exception:
             pass
@@ -298,6 +304,7 @@ def logout_information(request,slug):
         pass
 
     return redirect("/accounts/logout")
+
 
 
 

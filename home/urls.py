@@ -12,12 +12,13 @@ urlpatterns = [
     path('login',views.LoginView.as_view(template_name = 'login.html',authentication_form = UserLoginForm)),
     path('profile/<username>',ProfileView.as_view(),name='profile'),
     path('search',SearchView.as_view(),name = 'search'),
-    path('follow-unfollow-user/<username>',follow_unfollow_user,name = 'follow'),
+    path('follow-unfollow-user',follow_unfollow_user,name = 'follow-unfollow'),
     path('login-user',store_login_info,name = 'login-user'),
     path('logout/<slug>',logout_information,name = 'logout'),
     path('send-friend-request',send_friend_request_or_remove,name = 'friend-request'),
     path('mark-as-read',mark_as_read,name = 'mark-as-read'),
-    path('accept-friend-request/',accept_friend_request,name = 'accept-friend-request')
+    path('accept-friend-request',accept_friend_request,name = 'accept-friend-request'),
+
 ]
 
 # creating image url
