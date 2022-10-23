@@ -27,12 +27,11 @@ class UserProfile(AbstractUser):
     job = models.TextField(blank = True, null = True)
     profile_pic = ResizedImageField(size = [ 512, 512],upload_to = 'profile_pic', default = 'default.png', null = True ,force_format = 'PNG')
 
-    following = models.ManyToManyField('UserProfile',symmetrical=False, blank = True, related_name= 'user_followings')
-    friends = models.ManyToManyField('UserProfile', symmetrical=False, blank=True , related_name= 'user_friends')
+    user_friends = models.ManyToManyField('self',blank = True , symmetrical=False, related_name='users_friends')
+    user_followers = models.ManyToManyField('self',blank = True , symmetrical= False,  related_name='users_followers')
 
     class Meta(AbstractUser.Meta):
         swappable = 'AUTH_USER_MODEL'
-
 
     def __str__(self):
         return f"{self.username}"
@@ -59,8 +58,6 @@ class FriendRequest(models.Model):
 
     def __str__(self):
         return f" < {self.from_user} ---> {self.to_user} >"
-
-
 
 class LoginSessionInfo(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)

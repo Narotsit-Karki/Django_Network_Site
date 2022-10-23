@@ -188,6 +188,7 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 
 
 # for deleting notifications
-# DJANGO_NOTIFICATIONS_CONFIG = {
-#     'SOFT_DELETE': False,
-# }
+
+DJANGO_NOTIFICATIONS_CONFIG = {
+    'USE_JSONFIELD':True
+}

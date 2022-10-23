@@ -118,7 +118,6 @@ class ContactSettingsView(BaseView):
 class FingerPrintSettingsView(BaseView):
     def get(self,request):
         self.view
-        self.view['auth_user'] = self.get_user(request)
         return render(request , 'settings-fingerprint.html',self.view)
 
 

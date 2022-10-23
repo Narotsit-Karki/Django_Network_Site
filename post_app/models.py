@@ -14,5 +14,23 @@ class UserPost(models.Model):
     post_likes= models.IntegerField(default=0)
     post_comments = models.IntegerField(default=0)
 
+
     def __str__(self):
         return f"< {self.user.username} : {self.slug} : {self.created_at}"
+
+
+class SavedPost(models.Model):
+    user = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+    post = models.ForeignKey(UserPost,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f' < {self.user} : {self.post}'
+
+class HiddenPost(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    post = models.ForeignKey(UserPost, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f' < {self.user} : {self.post}'
+
+

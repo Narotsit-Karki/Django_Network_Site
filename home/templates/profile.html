@@ -1,15 +1,34 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
 
-<!--<link href='https://cdn.jsdelivr.net/npm/boxicons@1.9.2/css/boxicons.min.css' rel='stylesheet'>-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="{% static 'assets/images/logo-16x16.png' %}" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Angalo - Social Network</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Major+Mono+Display" rel="stylesheet">
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@1.9.2/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Styles -->
+    <link href="{% static 'assets/css/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/components.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/profile.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/media.css' %}" rel="stylesheet">
+    <script src="{% static 'assets/js/load.js' %}" type="text/javascript"></script>
+</head>
+
 <style>
-.btn {
-   white-space: nowrap;
-   text-align: center;
-}
-    input[type = "file"]{
-    display: none;
+    .btn{
+        white-space: nowrap;
+        text-align : center;
     }
 
 </style>
@@ -26,9 +45,9 @@
                                  alt="Profile Header Background">
                             <div class="cover-overlay">
                                 {% if User_Profile == request.user %}
-                                <label for="updateProfilePic" class="upload" style="white-space:no-wrap;">
+                                <label for="updateProfilePic_2" class="upload" style="white-space:no-wrap;">
                                     <i class='bx bxs-camera'></i> Update Cover
-                                    <input type="file" id="updateProfilePicInput" class="text-center upload">
+                                    <input type="file" id="updateProfilePicInput_1" class="text-center upload">
                                 </label>
 
                                 {% endif %}
@@ -59,24 +78,20 @@
                                         {{User_Profile.last_name}}</p>
                                     <p class="profile-username mb-3 text-muted">@{{User_Profile.username}}</p>
                                 </div>
-                                <div class="intro p-3">
+                                {% if User_Profile != request.user %}
+                                <div class="intro mt-4">
                                     <div class="d-flex">
-
-                                        {% if User_Profile != request.user %}
-
                                         {% if Following %}
                                         <form method="GET" action="/follow-unfollow-user">
                                             <input hidden value='{{User_Profile.username}}' name="username">
-                                            <button type="submit" style="border-radius:50px;font-size:0.9rem;"
-                                                    class="btn btn-outline-success btn-lg"><i
-                                                    class='bx bx-check'></i> UnFollow
-                                            </button>
+                                                <button type="submit" style="border-radius:50px;" class="btn btn-md btn-outline-success mr-3"><i class='bx bx-check'></i>Following</button>
+
                                         </form>
                                         {% else %}
                                         <form method="GET" action="/follow-unfollow-user">
                                             <input hidden value='{{User_Profile.username}}' name="username">
-                                            <button type="submit" class="btn btn-outline-primary btn-lg"
-                                                    style="border-radius:50px;font-size:0.9rem;"><i
+                                            <button type="submit" class="btn btn-outline-primary btn-md mr-3"
+                                                    style="border-radius:50px"><i
                                                     class="bx bx-plus"></i>
                                                 Follow
                                             </button>
@@ -87,7 +102,7 @@
                                         <form action="/send-friend-request" method="GET">
                                             <input hidden name="addfriend_username"
                                                    value="{{searched_user.username}}">
-                                            <button type="submit" class="btn btn-primary btn-lg"
+                                            <button type="submit" class="btn btn-primary btn-md"
                                                     style="border-radius:50px;font-size:0.9rem;"><i
                                                     class='bx bx-user-check'></i>
                                                 Request sent
@@ -99,8 +114,8 @@
                                         {% if not Friend and not Friend_Request_Sent %}
                                         <form method="GET" action='/send-friend-request'>
                                             <input hidden name="addfriend_username" value="{{User_Profile.username}}">
-                                            <button type="submit" class="btn btn-primary btn-lg"
-                                                    style="border-radius:50px;font-size:0.9rem;"
+                                            <button type="submit" class="btn btn-primary btn-md"
+                                                    style="border-radius:50px;"
                                             ><i class='bx bx-user-plus'></i>
                                                 <span>Add friend</span>
                                             </button>
@@ -109,16 +124,16 @@
                                         <form method="GET" action='/unfriend'>
                                             <input hidden name="username"
                                                    value="{{User_Profile.username}}">
-                                            <button type="submit" class="btn btn-primary btn-sm"
-                                                    style="border-radius:50px;font-size:0.9rem;"
-                                            ><i class='bx bxs-user-x'></i>
-                                                Unfriend</span>
+                                            <button type="submit" class="btn btn-primary btn-md"
+                                                    style="border-radius:50px;"
+                                            ><i class='bx bx-user-x'></i>
+                                                Unfriend
                                             </button>
                                         </form>
                                         {% endif %}
 
 
-                                        {% endif %}
+
                                         <button type="button" class="btn btn-follow" id="moreMobile"
                                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
                                                 class='bx bx-dots-horizontal-rounded'></i> <span
@@ -136,7 +151,10 @@
                                             <a href="/" class="dropdown-item">Likes</a>
                                         </div>
                                     </div>
+
                                 </div>
+                                 {% endif %}
+
                                 <div class="intro mt-5 mv-hidden p-4">
                                     <div class="intro-item d-flex justify-content-between align-items-center">
                                         <h3 class="intro-about">Intro</h3>
@@ -164,7 +182,7 @@
                                     </div>
                                     {% if request.user == User_Profile %}
                                     <div class="intro-item d-flex justify-content-between align-items-center">
-                                        <a href="#" class="btn btn-quick-link join-group-btn border w-100">Edit
+                                        <a href="{% url 'basic-settings' %}" class="btn btn-quick-link join-group-btn border w-100">Edit
                                             Details</a>
                                     </div>
                                     {% endif %}
@@ -213,9 +231,9 @@
                                                     <div class="form-group post-input">
                                                         <textarea class="form-control" name = "description" id="postForm" rows="2"
                                                                   placeholder="What's on your mind?"></textarea>
-                                                        <img style="object-fit:cover;"  id='photo_upload_1' style = "display:none;"
+                                                        <img src ="#" id='photo_upload_1' style ="display:none;"
                                                              class="img-fluid">
-                                                        <video id="video_upload_1" class="video-js vjs-default-skin post-content" style ="display:none;"width="640px" height="400px" controls autoplay>
+                                                        <video id="video_upload_1" class="video-js vjs-default-skin post-content" style ="display:none;" width="640px" height="400px" controls autoplay>
                                                         Browser not supported
                                                         </video>
 
@@ -224,12 +242,12 @@
                                                         <div class="col-md-9">
 
                                                             <label class="btn btn-link post-form-btn btn-md">
-                                                                <input id ='photo_1' type="file" name = 'photo_upload'/>
+                                                                <input style ="display: none;"id ='photo_1' type="file" name = 'photo_upload'/>
                                                                 <i class='bx bxs-image'></i> <span>Photo</span>
                                                             </label>
 
                                                             <label class="btn btn-link post-form-btn btn-md">
-                                                                <input id ='video_1' type="file" name = 'video_upload'/>
+                                                                <input style ="display: none;" id ='video_1' type="file" name = 'video_upload'/>
                                                                 <i class='bx bxs-videos'></i> <span>Video</span>
                                                             </label>
 
@@ -273,7 +291,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-9 col-sm-12">
+                                            <div class="col-md-9 col-sm-12" style="display:none;">
                                                 <div class="timeline-manage">
                                                     <button type="button"
                                                             class="btn btn-quick-link join-group-btn border btn-sm tmo-buttons">
@@ -291,14 +309,16 @@
                                             </div>
 
                                         </div>
+
+                                        {% for post in User_Posts %}
+                                        {% if post not in Hidden_Posts %}
                                         <div class="post border-bottom p-3 bg-white w-shadow">
                                             <div class="media text-muted pt-3">
                                                 <img src="{{ User_Profile.profile_pic.url }}" alt="Online user"
                                                      class="mr-3 post-user-image">
                                                 <div class="media-body pb-3 mb-0 small lh-125">
                                                     <div class="d-flex justify-content-between align-items-center w-100">
-                                                        <span class="post-type text-muted"><a href="#"
-                                                                                              class="text-gray-dark post-user-name mr-2">{{User_Profile.fname}} {{User_Profile.lname}}</a> updated cover photo</span>
+                                                        <span class="post-type text-muted"><a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.first_name}} {{User_Profile.last_name}}</a></span>
                                                         <div class="dropdown">
                                                             <a href="#" class="post-more-settings" role="button"
                                                                data-toggle="dropdown" id="postOptions"
@@ -306,6 +326,7 @@
                                                                 <i class='bx bx-dots-horizontal-rounded'></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left post-dropdown-menu">
+                                                               {% if User_Profile != request.user %}
                                                                 <a href="#" class="dropdown-item"
                                                                    aria-describedby="savePost">
                                                                     <div class="row">
@@ -362,6 +383,391 @@
                                                                         </div>
                                                                     </div>
                                                                 </a>
+                                                                {% else %}
+                                                                <a href="{% url 'delete-post' post.slug %}" class="dropdown-item"
+                                                                   aria-describedby="deletePost">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <i class='bx bxs-trash '></i>
+                                                                        </div>
+                                                                        <div class="col-md-10">
+                                                                            <span class="fs-9">Delete post</span>
+                                                                            <small id="deletePost"
+                                                                                   class="form-text text-muted">delete this
+                                                                                post</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a href="{% url 'edit-post' post.slug %}" class="dropdown-item"
+                                                                   aria-describedby="edirPost">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <i class='bx bxs-edit '></i>
+                                                                        </div>
+                                                                        <div class="col-md-10">
+                                                                            <span class="fs-9">Edit post</span>
+                                                                            <small id="editPost"
+                                                                                   class="form-text text-muted">edit this
+                                                                                post</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                {%  endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="d-block">{{ post.created_at }}  · <i
+                                                            class='bx bxs-group '></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <p>{{post.description}}</p>
+                                            </div>
+                                            {% if post.post_image or post.post_video %}
+                                            <div class="d-block mt-3">
+                                                {% if post.post_image %}
+                                                <img src="{{post.post_image.url}}"
+                                                     class="w-100 mb-3" alt="post image">
+                                                photo
+                                                {% else %}
+                                                    <video id="my_video_post" class="video-js vjs-default-skin post-content" width="640px" height="400px" controls ='True' data-setup='{ "aspectRatio":"640:400", "playbackRates": [1, 1.5, 2] }'>
+                                                            <source src="{{post.post_video.url}}" type='video/mp4' />
+
+                                                    </video>
+
+                                                {% endif %}
+
+                                            </div>
+                                            {% endif %}
+                                            <div class="mb-2">
+
+                                                <!-- Reactions -->
+                                                <div class="argon-reaction">
+                                                        <span class="like-btn">
+                                                            <a href="#" class="post-card-buttons" id="reactions"><i
+                                                                    class='bx bxs-like mr-2'></i> {{post.post_likes}}</a>
+                                                            <ul class="reactions-box dropdown-shadow">
+                                                                <li class="reaction reaction-like"
+                                                                    data-reaction="Like"></li>
+                                                                <li class="reaction reaction-love"
+                                                                    data-reaction="Love"></li>
+                                                                <li class="reaction reaction-haha"
+                                                                    data-reaction="HaHa"></li>
+                                                                <li class="reaction reaction-wow"
+                                                                    data-reaction="Wow"></li>
+                                                                <li class="reaction reaction-sad"
+                                                                    data-reaction="Sad"></li>
+                                                                <li class="reaction reaction-angry"
+                                                                    data-reaction="Angry"></li>
+                                                            </ul>
+                                                        </span>
+                                                </div>
+
+                                                <a href="javascript:void(0)" class="post-card-buttons"
+                                                   id="show-comments"><i class='bx bx-message-rounded mr-2'></i>{{post.post_comments}}</a>
+                                                <div class="dropdown dropup share-dropup">
+                                                    <a href="#" class="post-card-buttons" data-toggle="dropdown"
+                                                       aria-haspopup="true" aria-expanded="false">
+                                                        <i class='bx bx-share-alt mr-2'></i> Share
+                                                    </a>
+                                                    <div class="dropdown-menu post-dropdown-menu">
+                                                        <a href="#" class="dropdown-item">
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <i class='bx bx-share-alt'></i>
+                                                                </div>
+                                                                <div class="col-md-10">
+                                                                    <span>Share Now (Public)</span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <a href="#" class="dropdown-item">
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <i class='bx bx-share-alt'></i>
+                                                                </div>
+                                                                <div class="col-md-10">
+                                                                    <span>Share...</span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                        <a href="#" class="dropdown-item">
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <i class='bx bx-message'></i>
+                                                                </div>
+                                                                <div class="col-md-10">
+                                                                    <span>Send as Message</span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="border-top pt-3 hide-comments" style="display: none;">
+                                                <div class="row bootstrap snippets">
+                                                    <div class="col-md-12">
+                                                        <div class="comment-wrapper">
+                                                            <div class="panel panel-info">
+                                                                <div class="panel-body">
+                                                                    <ul class="media-list comments-list">
+                                                                        <li class="media comment-form">
+                                                                            <a href="/profile/request.user.username}}"
+                                                                               class="pull-left">
+                                                                                <img src="{{request.user.profile_pic.url }}"
+                                                                                     alt="" class="img-circle">
+                                                                            </a>
+                                                                            <div class="media-body">
+                                                                                <form action="" method="" role="form">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-12">
+                                                                                            <div class="input-group">
+                                                                                                <input type="text"
+                                                                                                       class="form-control comment-input"
+                                                                                                       placeholder="Write a comment...">
+
+                                                                                                <div class="input-group-btn">
+                                                                                                    <button type="button"
+                                                                                                            class="btn comment-form-btn"
+                                                                                                            data-toggle="tooltip"
+                                                                                                            data-placement="top"
+                                                                                                            title="Tooltip on top">
+                                                                                                        <i class='bx bxs-smiley-happy'></i>
+                                                                                                    </button>
+                                                                                                    <button type="button"
+                                                                                                            class="btn comment-form-btn comment-form-btn"
+                                                                                                            data-toggle="tooltip"
+                                                                                                            data-placement="top"
+                                                                                                            title="Tooltip on top">
+                                                                                                        <i class='bx bx-camera'></i>
+                                                                                                    </button>
+                                                                                                    <button type="button"
+                                                                                                            class="btn comment-form-btn comment-form-btn"
+                                                                                                            data-toggle="tooltip"
+                                                                                                            data-placement="top"
+                                                                                                            title="Tooltip on top">
+                                                                                                        <i class='bx bx-microphone'></i>
+                                                                                                    </button>
+                                                                                                    <button type="button"
+                                                                                                            class="btn comment-form-btn"
+                                                                                                            data-toggle="tooltip"
+                                                                                                            data-placement="top"
+                                                                                                            title="Tooltip on top">
+                                                                                                        <i class='bx bx-file-blank'></i>
+                                                                                                    </button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li class="media">
+                                                                            <a href="#" class="pull-left">
+                                                                                <img src="{% static 'assets/images/users/user-2.jpg' %}"
+                                                                                     alt="" class="img-circle">
+                                                                            </a>
+                                                                            <div class="media-body">
+                                                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                                                    <strong class="text-gray-dark"><a
+                                                                                            href="#" class="fs-8">Karen
+                                                                                        Minas</a></strong>
+                                                                                    <a href="#"><i
+                                                                                            class='bx bx-dots-horizontal-rounded'></i></a>
+                                                                                </div>
+                                                                                <span class="d-block comment-created-time">30 min ago</span>
+                                                                                <p class="fs-8 pt-2">
+                                                                                    Lorem ipsum dolor sit amet,
+                                                                                    consectetur adipiscing elit.
+                                                                                    Lorem ipsum dolor sit amet, <a
+                                                                                        href="#">#consecteturadipiscing </a>.
+                                                                                </p>
+                                                                                <div class="commentLR">
+                                                                                    <button type="button"
+                                                                                            class="btn btn-link fs-8">
+                                                                                        Like
+                                                                                    </button>
+                                                                                    <button type="button"
+                                                                                            class="btn btn-link fs-8">
+                                                                                        Reply
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li class="media">
+                                                                            <a href="#" class="pull-left">
+                                                                                <img src="https://bootdey.com/img/Content/user_2.jpg"
+                                                                                     alt="" class="img-circle">
+                                                                            </a>
+                                                                            <div class="media-body">
+                                                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                                                    <strong class="text-gray-dark"><a
+                                                                                            href="#" class="fs-8">Lia
+                                                                                        Earnest</a></strong>
+                                                                                    <a href="#"><i
+                                                                                            class='bx bx-dots-horizontal-rounded'></i></a>
+                                                                                </div>
+                                                                                <span class="d-block comment-created-time">2 hours ago</span>
+                                                                                <p class="fs-8 pt-2">
+                                                                                    Lorem ipsum dolor sit amet,
+                                                                                    consectetur adipiscing elit.
+                                                                                    Lorem ipsum dolor sit amet, <a
+                                                                                        href="#">#consecteturadipiscing </a>.
+                                                                                </p>
+                                                                                <div class="commentLR">
+                                                                                    <button type="button"
+                                                                                            class="btn btn-link fs-8">
+                                                                                        Like
+                                                                                    </button>
+                                                                                    <button type="button"
+                                                                                            class="btn btn-link fs-8">
+                                                                                        Reply
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li class="media">
+                                                                            <a href="#" class="pull-left">
+                                                                                <img src="https://bootdey.com/img/Content/user_3.jpg"
+                                                                                     alt="" class="img-circle">
+                                                                            </a>
+                                                                            <div class="media-body">
+                                                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                                                    <strong class="text-gray-dark"><a
+                                                                                            href="#" class="fs-8">Rusty
+                                                                                        Mickelsen</a></strong>
+                                                                                    <a href="#"><i
+                                                                                            class='bx bx-dots-horizontal-rounded'></i></a>
+                                                                                </div>
+                                                                                <span class="d-block comment-created-time">17 hours ago</span>
+                                                                                <p class="fs-8 pt-2">
+                                                                                    Lorem ipsum dolor sit amet,
+                                                                                    consectetur adipiscing elit.
+                                                                                    Lorem ipsum dolor sit amet, <a
+                                                                                        href="#">#consecteturadipiscing </a>.
+                                                                                </p>
+                                                                                <div class="commentLR">
+                                                                                    <button type="button"
+                                                                                            class="btn btn-link fs-8">
+                                                                                        Like
+                                                                                    </button>
+                                                                                    <button type="button"
+                                                                                            class="btn btn-link fs-8">
+                                                                                        Reply
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li class="media">
+                                                                            <div class="media-body">
+                                                                                <div class="comment-see-more text-center">
+                                                                                    <button type="button"
+                                                                                            class="btn btn-link fs-8">
+                                                                                        See More
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+
+                                        <div class="post border-bottom p-3 bg-white w-shadow">
+                                            <div class="media text-muted pt-3">
+                                                <img src="{{ User_Profile.profile_pic.url }}" alt="Online user"
+                                                     class="mr-3 post-user-image">
+                                                <div class="media-body pb-3 mb-0 small lh-125">
+                                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                                        <span class="post-type text-muted"><a href="#"
+                                                                                              class="text-gray-dark post-user-name mr-2">{{User_Profile.fname}} {{User_Profile.lname}}</a> updated cover photo</span>
+                                                        <div class="dropdown">
+                                                            <a href="#" class="post-more-settings" role="button"
+                                                               data-toggle="dropdown" id="postOptions"
+                                                               aria-haspopup="true" aria-expanded="false">
+                                                                <i class='bx bx-dots-horizontal-rounded'></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left post-dropdown-menu">
+                                                                {% if User_Profile != request.user %}
+                                                                <a href="#" class="dropdown-item"
+                                                                   aria-describedby="savePost">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <i class='bx bx-bookmark-plus post-option-icon'></i>
+                                                                        </div>
+                                                                        <div class="col-md-10">
+                                                                            <span class="fs-9">Save post</span>
+                                                                            <small id="savePost"
+                                                                                   class="form-text text-muted">Add this
+                                                                                to your saved items</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a href="#" class="dropdown-item"
+                                                                   aria-describedby="hidePost">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <i class='bx bx-hide post-option-icon'></i>
+                                                                        </div>
+                                                                        <div class="col-md-10">
+                                                                            <span class="fs-9">Hide post</span>
+                                                                            <small id="hidePost"
+                                                                                   class="form-text text-muted">See
+                                                                                fewer posts like this</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a href="#" class="dropdown-item"
+                                                                   aria-describedby="snoozePost">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <i class='bx bx-time post-option-icon'></i>
+                                                                        </div>
+                                                                        <div class="col-md-10">
+                                                                            <span class="fs-9">Snooze Arthur for 30 days</span>
+                                                                            <small id="snoozePost"
+                                                                                   class="form-text text-muted">Temporarily
+                                                                                stop seeing posts</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                <a href="#" class="dropdown-item"
+                                                                   aria-describedby="reportPost">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <i class='bx bx-block post-option-icon'></i>
+                                                                        </div>
+                                                                        <div class="col-md-10">
+                                                                            <span class="fs-9">Report</span>
+                                                                            <small id="reportPost"
+                                                                                   class="form-text text-muted">I'm
+                                                                                concerned about this post</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                {% else %}
+                                                                <a href="#" class="dropdown-item"
+                                                                   aria-describedby="deletePost">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <i class='bx bx-bookmark-plus post-option-icon'></i>
+                                                                        </div>
+                                                                        <div class="col-md-10">
+                                                                            <span class="fs-9">Save post</span>
+                                                                            <small id="deletePost"
+                                                                                   class="form-text text-muted">Add this
+                                                                                to your saved items</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                {%  endif %}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -655,4 +1061,13 @@
     </div>
 </div>
 </body>
-{% endblock %}
+
+    <script src="{% static 'assets/js/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/popper/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap/bootstrap.min.js' %}"></script>
+    <!-- Optional -->
+    <script src="{% static 'assets/js/app.js' %}"></script>
+    <script src="{% static 'assets/js/components/components.js' %}"></script>
+</body>
+</html>
+

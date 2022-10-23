@@ -32,7 +32,9 @@ img.profile-photo-lg{
   width: 80px;
   border-radius: 50%;
 }
+button{
 
+}
 </style>
 
 <body class="newsfeed">
@@ -117,7 +119,7 @@ img.profile-photo-lg{
                                             </a>
                                         </div>
                                         <div class="col-md-7 col-sm-7">
-                                            <h5><a href="#" class="profile-link">{{ searched_user.first_name }} {{ searched_user.last_name }}</a></h5>
+                                            <h5><a href="/profile/{{searched_user.username}}" class="profile-link">{{ searched_user.first_name}} {{searched_user.last_name}}</a></h5>
                                             <a href="/profile/{{ searched_user.username }}"><span class="text-muted">@{{searched_user.username}}</span></a>
                                             {% if searched_user.job|length != 0 %}
                                             <p class="intro-title text-muted"><i

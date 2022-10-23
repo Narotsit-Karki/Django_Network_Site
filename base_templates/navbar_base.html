@@ -229,8 +229,11 @@
                     <!-- notify content -->
                     <div class="drop-content">
                         {% for notification in request.user.notifications.all %}
+
                         <li>
+
                             <div class="col-md-2 col-sm-2 col-xs-2">
+                                <a href = '/profile/{{notification.actor.username}}'>
                                 <div class="notify-img">
                                     <img not-id="{{notification.id}}" src="{{notification.actor.profile_pic.url }}" alt="notification user image">
                                 </div>
@@ -252,12 +255,9 @@
                                 <p class="time">
                                     <span class="badge badge-pill badge-primary"><i class='bx bxs-group'></i></span>
                                     {{notification.timestamp}}
-                                            {% if 'sent you a friend request' in notification.description %}
-                                                <button onclick="location.href ='/profile/{{notification.actor.username}}'" type ='submit' class = "btn btn-primary btn-sm" id = 'accept-friend' style="border-radius:50px;font-size:0.8rem;"><i class='fa fa-eye'></i> view</button>
-                                            {% endif %}
-                                        </p>
-
-                                    </div>
+                                </p>
+                            </div>
+                        </a>
                         </li>
                         {% endfor %}
 
