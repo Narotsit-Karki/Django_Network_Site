@@ -1,5 +1,17 @@
 {% load static %}
 {% load notifications_tags %}
+<style>
+.dark-mode {
+  background-color: black;
+}
+</style>
+
+<script>
+function myFunction() {
+   var element = document.body;
+   element.classList.toggle("dark-mode");
+}
+</script>
 
 <nav id="navbar-main" class="navbar navbar-expand-lg shadow-sm sticky-top">
     <div class="w-100 justify-content-md-center">
@@ -296,7 +308,7 @@
                         <img src="{% static 'assets/images/icons/navbar/help.png' %}" alt="Navbar icon"> Help Center</a>
                     <a class="dropdown-item d-flex align-items-center dark-mode" href="#">
                         <img src="{% static 'assets/images/icons/navbar/moon.png' %}" alt="Navbar icon"> Dark Mode
-                        <button type="button" class="btn btn-lg btn-toggle ml-auto" data-toggle="button"
+                        <button onclick="myFunction()" type="button" class="btn btn-lg btn-toggle ml-auto" data-toggle="button"
                                 aria-pressed="false" autocomplete="off">
                             <div class="handle"></div>
                         </button>

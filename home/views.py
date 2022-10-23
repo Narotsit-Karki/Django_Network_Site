@@ -153,6 +153,14 @@ class ProfileView(BaseView):
         return render(request, 'profile.html',self.view)
 
 
+
+
+class AboutView(ProfileView):
+    def get(self,request,username):
+        self.view
+        return render(request , 'about.html',self.view)
+
+
 #error 404
 def error_404(request,exception):
     return render(request,'404.html')
