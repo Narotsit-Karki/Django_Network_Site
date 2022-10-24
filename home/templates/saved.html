@@ -1,6 +1,5 @@
 {% extends 'profile_base.html' %}
 {% load static %}
-
 {% block content %}
 <style>
     .btn{
@@ -9,8 +8,8 @@
     }
 
 
-</style>
 
+</style>
 <body class="profile">
 <div class="container-fluid newsfeed d-flex" id="wrapper">
     <div class="row newsfeed-size">
@@ -63,7 +62,9 @@
                                         {% if Following %}
                                         <form method="GET" action="/follow-unfollow-user">
                                             <input hidden value='{{User_Profile.username}}' name="username">
-                                                <button type="submit" style="border-radius:50px;" class="btn btn-md btn-outline-success mr-3">Following</button>
+                                            <button type="submit" style="border-radius:50px;"
+                                                    class="btn btn-md btn-outline-success mr-3">Following
+                                            </button>
 
                                         </form>
                                         {% else %}
@@ -112,7 +113,6 @@
                                         {% endif %}
 
 
-
                                         <button type="button" class="btn btn-follow" id="moreMobile"
                                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
                                                 class='bx bx-dots-horizontal-rounded'></i> <span
@@ -132,7 +132,7 @@
                                     </div>
 
                                 </div>
-                                 {% endif %}
+                                {% endif %}
 
                                 <div class="intro mt-5 mv-hidden p-4">
                                     <div class="intro-item d-flex justify-content-between align-items-center">
@@ -161,7 +161,8 @@
                                     </div>
                                     {% if request.user == User_Profile %}
                                     <div class="intro-item d-flex justify-content-between align-items-center">
-                                        <a href="{% url 'basic-settings' %}" class="btn btn-quick-link join-group-btn border w-100">Edit
+                                        <a href="{% url 'basic-settings' %}"
+                                           class="btn btn-quick-link join-group-btn border w-100">Edit
                                             Details</a>
                                     </div>
                                     {% endif %}
@@ -178,11 +179,12 @@
                                 <div class="row">
                                     <div class="col-md-9 profile-center">
                                         <ul class="list-inline profile-links d-flex justify-content-between w-shadow rounded">
-                                            <li class="list-inline-item ">
+                                            <li class="list-inline-item profile-active">
                                                 <a href="/profile/{{User_Profile.username}}">Timeline</a>
                                             </li>
-                                            <li class="list-inline-item profile-active">
-                                                <a href="/profile/about/{{User_Profile.username}}">About</a></li>
+                                            <li class="list-inline-item">
+                                                <a href="/profile/{{User_Profile.username}}/about">About</a>
+                                            </li>
                                             <li class="list-inline-item">
                                                 <a href="friends.html">Friends</a>
                                             </li>
@@ -204,55 +206,9 @@
                                             </li>
                                         </ul>
 
-
-                                         <div class="post border-bottom p-3 bg-white w-shadow">
-                                            <div class="media text-muted pt-3">
-                                                <div>
-                                                <img src="{{ User_Profile.profile_pic.url }}" alt="Online user"
-                                                     class="mr-3 post-user-image">
-                                                <div class="media-body pb-3 mb-0 small lh-125">
-                                                    <div class="d-flex justify-content-between align-items-center w-100">
-                                                        <span class="post-type text-muted"><a href="#" class="text-gray-dark post-user-name mr-2">@{{User_Profile.username}}</a></span>
-                                                    </div>
-                                                </div>
-                                                    <div class="media-body">
-                                                    <div class="d-flex justify-content-between">
-                                                        <p class ="post-type text-muted"><i class ='bx bx-user'> Full Name</i></p> <a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.first_name}} {{ User_Profile.last_name}}</a>
-                                                    </div>
-                                                        <hr>
-                                                         <div class="d-flex justify-content-between">
-                                                        <p class ="post-type text-muted"><i class ='bx bx-map'> Country</i></p> <a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.country}}</a>
-                                                    </div>
-                                                        <hr>
-                                                        <div class="d-flex justify-content-between">
-                                                        <p class ="post-type text-muted"><i class ='bx bx-building'> City</i></p> <a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.city}}</a>
-                                                        </div>
-                                                        <hr>
-                                                         <div class="d-flex justify-content-between">
-                                                            <p class ="post-type text-muted"><i class ='bx bx-briefcase'> Job</i></p> <a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.job}}</a>
-                                                        </div>
-                                                        <hr>
-                                                        <div class="d-flex justify-content-between">
-                                                            <p class ="post-type text-muted"><i class ='bx bx-group'> Followers</i></p> <a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.user_followers.count}}</a>
-                                                        </div>
-                                                        <hr>
-                                                        <div class="d-flex justify-content-between">
-                                                            <p class ="post-type text-muted"><i class ='bx bx-group'> Friends</i></p> <a href="#" class="text-gray-dark post-user-name mr-2">{{User_Profile.user_friends.count}}</a>
-                                                        </div>
-                                                        <hr>
-                                                        <div class="d-flex justify-content-between">
-                                                            <p class ="post-type text-muted"><i class ='bx bx-images'> Posts</i></p> <a href="#" class="text-gray-dark post-user-name mr-2">{{User_Posts.count}}</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
                                         <div class="bg-white profile-posts-options mt-5 mb-4 py-3 d-flex justify-content-between shadow-sm">
                                             <div class="col-md-3 col-sm-12">
-                                                <h6 class="timeline-title">Posts</h6>
+                                                <h6 class="timeline-title">Saved Posts</h6>
                                             </div>
                                             <div class="col-md-9 col-sm-12">
                                                 <div class="timeline-manage">
@@ -290,16 +246,26 @@
 
                                         </div>
 
-                                        {% include 'user_post.html' %}
+                                              {% if Saved_Posts.count == 0 %}
+                                             <div class="bg-white profile-posts-options mt-5 mb-4 py-3 d-flex justify-content-between shadow-sm">
+                                                    <div class="col-md-12 ">
+                                                    <h5 class="timeline-title text-muted">You can save posts in this area</h5>
+                                                    </div>
+                                             </div>
+
+                                            {% endif %}
+
+                                        <!--  saved Post Starts Here-->
+                                        {% for post in Saved_Posts %}
 
                                         <div class="post border-bottom p-3 bg-white w-shadow">
                                             <div class="media text-muted pt-3">
-                                                <img src="{{ User_Profile.profile_pic.url }}" alt="Online user"
+                                                <img src="{{ post.user.profile_pic.url }}" alt="Online user"
                                                      class="mr-3 post-user-image">
                                                 <div class="media-body pb-3 mb-0 small lh-125">
                                                     <div class="d-flex justify-content-between align-items-center w-100">
                                                         <span class="post-type text-muted"><a href="#"
-                                                                                              class="text-gray-dark post-user-name mr-2">{{User_Profile.fname}} {{User_Profile.lname}}</a> updated cover photo</span>
+                                                                                              class="text-gray-dark post-user-name mr-2">{{post.user.first_name}} {{post.user.last_name}}</a></span>
                                                         <div class="dropdown">
                                                             <a href="#" class="post-more-settings" role="button"
                                                                data-toggle="dropdown" id="postOptions"
@@ -307,122 +273,68 @@
                                                                 <i class='bx bx-dots-horizontal-rounded'></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left post-dropdown-menu">
-                                                                {% if User_Profile != request.user %}
-                                                                <a href="#" class="dropdown-item"
+                                                                {% if post.user != request.user %}
+                                                                <a href='#' class="dropdown-item"
                                                                    aria-describedby="savePost">
-                                                                    <div class="row">
+                                                                    <div class="row"
+                                                                         onclick="location.href = '/posts/save-unsave-post/{{post.slug}}'">
                                                                         <div class="col-md-2">
                                                                             <i class='bx bx-bookmark-plus post-option-icon'></i>
                                                                         </div>
                                                                         <div class="col-md-10">
-                                                                            <span class="fs-9">Save post</span>
+                                                                            <span class="fs-9">Unsave post</span>
                                                                             <small id="savePost"
-                                                                                   class="form-text text-muted">Add this
-                                                                                to your saved items</small>
+                                                                                   class="form-text text-muted">remove this
+                                                                                from your saved items</small>
                                                                         </div>
                                                                     </div>
                                                                 </a>
-                                                                <a href="#" class="dropdown-item"
-                                                                   aria-describedby="hidePost">
-                                                                    <div class="row">
-                                                                        <div class="col-md-2">
-                                                                            <i class='bx bx-hide post-option-icon'></i>
-                                                                        </div>
-                                                                        <div class="col-md-10">
-                                                                            <span class="fs-9">Hide post</span>
-                                                                            <small id="hidePost"
-                                                                                   class="form-text text-muted">See
-                                                                                fewer posts like this</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
-                                                                <a href="#" class="dropdown-item"
-                                                                   aria-describedby="snoozePost">
-                                                                    <div class="row">
-                                                                        <div class="col-md-2">
-                                                                            <i class='bx bx-time post-option-icon'></i>
-                                                                        </div>
-                                                                        <div class="col-md-10">
-                                                                            <span class="fs-9">Snooze Arthur for 30 days</span>
-                                                                            <small id="snoozePost"
-                                                                                   class="form-text text-muted">Temporarily
-                                                                                stop seeing posts</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
-                                                                <a href="#" class="dropdown-item"
-                                                                   aria-describedby="reportPost">
-                                                                    <div class="row">
-                                                                        <div class="col-md-2">
-                                                                            <i class='bx bx-block post-option-icon'></i>
-                                                                        </div>
-                                                                        <div class="col-md-10">
-                                                                            <span class="fs-9">Report</span>
-                                                                            <small id="reportPost"
-                                                                                   class="form-text text-muted">I'm
-                                                                                concerned about this post</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
-                                                                {% else %}
-                                                                <a href="#" class="dropdown-item"
-                                                                   aria-describedby="deletePost">
-                                                                    <div class="row">
-                                                                        <div class="col-md-2">
-                                                                            <i class='bx bx-bookmark-plus post-option-icon'></i>
-                                                                        </div>
-                                                                        <div class="col-md-10">
-                                                                            <span class="fs-9">Save post</span>
-                                                                            <small id="deletePost"
-                                                                                   class="form-text text-muted">Add this
-                                                                                to your saved items</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
-                                                                {%  endif %}
+                                                                {% endif %}
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <span class="d-block">3 hours ago <i
-                                                            class='bx bx-globe ml-3'></i></span>
+                                                    <span class="d-block">{{ post.created_at }}  ·
+                                                        <i class='bx bxs-group '></i></span>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis
-                                                    voluptatem veritatis harum, tenetur, quibusdam voluptatum, incidunt
-                                                    saepe minus maiores ea atque sequi illo veniam sint quaerat corporis
-                                                    totam et. Culpa?</p>
+                                                <p>{{post.description}}</p>
                                             </div>
+                                            {% if post.post_image or post.post_video %}
                                             <div class="d-block mt-3">
-                                                <img src="{% static 'assets/images/users/post/post-1.jpg' %}"
+                                                {% if post.post_image %}
+                                                <img src="{{post.post_image.url}}"
                                                      class="w-100 mb-3" alt="post image">
+                                                {% else %}
+                                                <video id="my_video_post" class="video-js vjs-default-skin post-content"
+                                                       width="640px" height="400px" controls='True'
+                                                       data-setup='{ "aspectRatio":"640:400", "playbackRates": [1, 1.5, 2] }'>
+                                                    <source src="{{post.post_video.url}}" type='video/mp4'/>
+
+                                                </video>
+                                                {% endif %}
                                             </div>
+                                            {% endif %}
                                             <div class="mb-2">
 
                                                 <!-- Reactions -->
                                                 <div class="argon-reaction">
-                                                        <span class="like-btn">
-                                                            <a href="#" class="post-card-buttons" id="reactions"><i
-                                                                    class='bx bxs-like mr-2'></i> 67</a>
-                                                            <ul class="reactions-box dropdown-shadow">
-                                                                <li class="reaction reaction-like"
-                                                                    data-reaction="Like"></li>
-                                                                <li class="reaction reaction-love"
-                                                                    data-reaction="Love"></li>
-                                                                <li class="reaction reaction-haha"
-                                                                    data-reaction="HaHa"></li>
-                                                                <li class="reaction reaction-wow"
-                                                                    data-reaction="Wow"></li>
-                                                                <li class="reaction reaction-sad"
-                                                                    data-reaction="Sad"></li>
-                                                                <li class="reaction reaction-angry"
-                                                                    data-reaction="Angry"></li>
-                                                            </ul>
-                                                        </span>
+            <span class="like-btn">
+                <a href="#" class="post-card-buttons" id="reactions">
+                    <i class='bx bxs-like mr-2'></i> {{post.post_likes}}
+                </a>
+                <ul class="reactions-box dropdown-shadow">
+                    <li class="reaction reaction-like" data-reaction="Like"></li>
+                    <li class="reaction reaction-love" data-reaction="Love"></li>
+                    <li class="reaction reaction-haha" data-reaction="HaHa"></li>
+                    <li class="reaction reaction-wow" data-reaction="Wow"></li>
+                    <li class="reaction reaction-sad" data-reaction="Sad"></li>
+                    <li class="reaction reaction-angry" data-reaction="Angry"></li>
+                </ul>
+            </span>
                                                 </div>
-
                                                 <a href="javascript:void(0)" class="post-card-buttons"
-                                                   id="show-comments"><i class='bx bx-message-rounded mr-2'></i> 5</a>
+                                                   id="show-comments"><i class='bx bx-message-rounded mr-2'></i>{{post.post_comments}}</a>
                                                 <div class="dropdown dropup share-dropup">
                                                     <a href="#" class="post-card-buttons" data-toggle="dropdown"
                                                        aria-haspopup="true" aria-expanded="false">
@@ -470,9 +382,9 @@
                                                                 <div class="panel-body">
                                                                     <ul class="media-list comments-list">
                                                                         <li class="media comment-form">
-                                                                            <a href="/profile/{{User_Profile.username}}"
+                                                                            <a href="/profile/request.user.username}}"
                                                                                class="pull-left">
-                                                                                <img src="{{ User_Profile.profile_pic.url }}"
+                                                                                <img src="{{request.user.profile_pic.url }}"
                                                                                      alt="" class="img-circle">
                                                                             </a>
                                                                             <div class="media-body">
@@ -635,6 +547,8 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>

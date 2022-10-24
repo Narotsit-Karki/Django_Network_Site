@@ -10,8 +10,10 @@ urlpatterns = [
     path('',HomeView.as_view(),name = 'home'),
     path('signup',SignUpView.as_view(),name = 'sign-up'),
     path('login',views.LoginView.as_view(template_name = 'login.html',authentication_form = UserLoginForm)),
+
     path('profile/<username>',ProfileView.as_view(),name='profile'),
     path('profile/<username>/about',AboutView.as_view(),name = 'profile-about'),
+    path('profile/<username>/saved',SavedView.as_view(), name = 'profile-saved'),
     path('search',SearchView.as_view(),name = 'search'),
     path('follow-unfollow-user',follow_unfollow_user,name = 'follow-unfollow'),
     path('login-user',store_login_info,name = 'login-user'),

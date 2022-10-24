@@ -1,0 +1,407 @@
+{% load static %}
+
+{% for post in User_Posts %}
+
+{% if post in Hidden_Posts %}
+<div class="alert alert-dark alert-dismissible fade show" role="alert" id="alert_{{post.slug}}">
+    This post was hidden recently
+    <button onclick="location.href='{% url 'hide-unhide-post' post.slug %}'" style="float:right;"
+            class="btn btn-dark btn-sm">undo
+    </button>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% else %}
+<div class="post border-bottom p-3 bg-white w-shadow">
+    <div class="media text-muted pt-3">
+        <img src="{{ User_Profile.profile_pic.url }}" alt="Online user"
+             class="mr-3 post-user-image">
+        <div class="media-body pb-3 mb-0 small lh-125">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <span class="post-type text-muted"><a href="#" class="text-gray-dark post-user-name mr-2">{{post.user.first_name}} {{post.user.last_name}}</a></span>
+                <div class="dropdown">
+                    <a href="#" class="post-more-settings" role="button"
+                       data-toggle="dropdown" id="postOptions"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class='bx bx-dots-horizontal-rounded'></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left post-dropdown-menu">
+                        {% if post.user != request.user %}
+                        <a href='#' class="dropdown-item"
+                           aria-describedby="savePost">
+                            <div class="row" onclick="location.href = '/posts/save-unsave-post/{{post.slug}}'">
+                                <div class="col-md-2">
+                                    <i class='bx bx-bookmark-plus post-option-icon'></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="fs-9">Save post</span>
+                                    <small id="savePost"
+                                           class="form-text text-muted">Add this
+                                        to your saved items</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a role="button" href="#" class="dropdown-item"
+                           aria-describedby="hidePost">
+                            <div class="row" onclick="location.href = '/posts/hide-unhide-post/{{post.slug}}'">
+                                <div class="col-md-2">
+                                    <i class='bx bx-hide post-option-icon'></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="fs-9">Hide post</span>
+                                    <small id="hidePost"
+                                           class="form-text text-muted">See
+                                        fewer posts like this</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           aria-describedby="snoozePost">
+                            <div class="row" onclick="location.href = '/posts/hide-unhide-post/{{post.slug}}'">
+                                <div class="col-md-2">
+                                    <i class='bx bx-time post-option-icon'></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="fs-9">Snooze Arthur for 30 days</span>
+                                    <small id="snoozePost"
+                                           class="form-text text-muted">Temporarily
+                                        stop seeing posts</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="dropdown-item"
+                           aria-describedby="reportPost">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <i class='bx bx-block post-option-icon'></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="fs-9">Report</span>
+                                    <small id="reportPost"
+                                           class="form-text text-muted">I'm
+                                        concerned about this post</small>
+                                </div>
+                            </div>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'delete-post' post.slug %}"
+                           class="dropdown-item"
+                           aria-describedby="deletePost">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <i class='bx bxs-trash '></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="fs-9">Delete post</span>
+                                    <small id="deletePost"
+                                           class="form-text text-muted">delete
+                                        this
+                                        post</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="{% url 'edit-post' post.slug %}"
+                           class="dropdown-item"
+                           aria-describedby="edirPost">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <i class='bx bxs-edit '></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <span class="fs-9">Edit post</span>
+                                    <small id="editPost"
+                                           class="form-text text-muted">edit
+                                        this
+                                        post</small>
+                                </div>
+                            </div>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <span class="d-block">{{ post.created_at }}  · <i
+                    class='bx bxs-group '></i></span>
+        </div>
+    </div>
+    <div class="mt-3">
+        <p>{{post.description}}</p>
+    </div>
+    {% if post.post_image or post.post_video %}
+    <div class="d-block mt-3">
+        {% if post.post_image %}
+        <img src="{{post.post_image.url}}"
+             class="w-100 mb-3" alt="post image">
+        {% else %}
+        <video id="my_video_post" class="video-js vjs-default-skin post-content"
+               width="640px" height="400px" controls='True'
+               data-setup='{ "aspectRatio":"640:400", "playbackRates": [1, 1.5, 2] }'>
+            <source src="{{post.post_video.url}}" type='video/mp4'/>
+
+        </video>
+        {% endif %}
+    </div>
+    {% endif %}
+    <div class="mb-2">
+
+        <!-- Reactions -->
+        <div class="argon-reaction">
+            <span class="like-btn">
+                <a href="#" class="post-card-buttons">
+
+                    {% if request.user in post.users_reacted.get_queryset %}
+                            {% for reaction in Post_Reactions %}
+                                        {% if reaction.user == request.user %}
+                                        <button class="btn"><img id='reaction-img' src = "/static/assets/images/icons/reactions/{{reaction.reaction_type}}.gif" style="width:28px;height:28px;"></button>
+                                        {% endif %}
+
+                            {% endfor %}
+
+                    {% else %}
+                            <button class="btn"><img id='reaction-img' src="{% static 'assets/images/icons/reactions/like_outline.png' %}" style="width:28px;height:28px;"></button>
+                    {% endif %}
+
+                    <span id='reaction-count'>{{post.users_reacted.count}}</span>
+                </a>
+                <ul class="reactions-box dropdown-shadow">
+                    <li class="reaction reaction-like" post-id="{{post.slug}}" id='like_reaction'
+                        data-reaction="Like"></li>
+                    <li class="reaction reaction-love" post-id="{{post.slug}}" id='love_reaction'
+                        data-reaction="Love"></li>
+                    <li class="reaction reaction-haha" post-id="{{post.slug}}" id='haha_reaction'
+                        data-reaction="HaHa"></li>
+                    <li class="reaction reaction-wow" post-id="{{post.slug}}" id='wow_reaction'
+                        data-reaction="Wow"></li>
+                    <li class="reaction reaction-sad" post-id="{{post.slug}}" id='sad_reaction'
+                        data-reaction="Sad"></li>
+                    <li class="reaction reaction-angry" post-id="{{post.slug}}" id='angry_reaction'
+                        data-reaction="Angry"></li>
+                </ul>
+            </span>
+        </div>
+
+        {% include 'reaction_ajax.js' %}
+
+
+        <a href="javascript:void(0)" class="post-card-buttons"
+           id="show-comments">
+            <button class="btn"><img src="{% static 'assets/images/icons/reactions/comments.png' %}"
+                                     style="width:28px;height:28px;"></button>
+            {{post.post_comments}}
+        </a>
+            <div class="dropdown dropup share-dropup">
+                <a href="#" class="post-card-buttons" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <i class='bx bx-share-alt mr-2'></i> Share
+                </a>
+                <div class="dropdown-menu post-dropdown-menu">
+                    <a href="#" class="dropdown-item">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <i class='bx bx-share-alt'></i>
+                            </div>
+                            <div class="col-md-10">
+                                <span>Share Now (Public)</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <i class='bx bx-share-alt'></i>
+                            </div>
+                            <div class="col-md-10">
+                                <span>Share...</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <i class='bx bx-message'></i>
+                            </div>
+                            <div class="col-md-10">
+                                <span>Send as Message</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="border-top pt-3 hide-comments" style="display: none;">
+                <div class="row bootstrap snippets">
+                    <div class="col-md-12">
+                        <div class="comment-wrapper">
+                            <div class="panel panel-info">
+                                <div class="panel-body">
+                                    <ul class="media-list comments-list">
+                                        <li class="media comment-form">
+                                            <a href="/profile/request.user.username}}"
+                                               class="pull-left">
+                                                <img src="{{request.user.profile_pic.url }}"
+                                                     alt="" class="img-circle">
+                                            </a>
+                                            <div class="media-body">
+                                                <form action="" method="" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="input-group">
+                                                                <input type="text"
+                                                                       class="form-control comment-input"
+                                                                       placeholder="Write a comment...">
+
+                                                                <div class="input-group-btn">
+                                                                    <button type="button"
+                                                                            class="btn comment-form-btn"
+                                                                            data-toggle="tooltip"
+                                                                            data-placement="top"
+                                                                            title="Tooltip on top">
+                                                                        <i class='bx bxs-smiley-happy'></i>
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn comment-form-btn comment-form-btn"
+                                                                            data-toggle="tooltip"
+                                                                            data-placement="top"
+                                                                            title="Tooltip on top">
+                                                                        <i class='bx bx-camera'></i>
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn comment-form-btn comment-form-btn"
+                                                                            data-toggle="tooltip"
+                                                                            data-placement="top"
+                                                                            title="Tooltip on top">
+                                                                        <i class='bx bx-microphone'></i>
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn comment-form-btn"
+                                                                            data-toggle="tooltip"
+                                                                            data-placement="top"
+                                                                            title="Tooltip on top">
+                                                                        <i class='bx bx-file-blank'></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </li>
+                                        <li class="media">
+                                            <a href="#" class="pull-left">
+                                                <img src="{% static 'assets/images/users/user-2.jpg' %}"
+                                                     alt="" class="img-circle">
+                                            </a>
+                                            <div class="media-body">
+                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                    <strong class="text-gray-dark"><a
+                                                            href="#" class="fs-8">Karen
+                                                        Minas</a></strong>
+                                                    <a href="#"><i
+                                                            class='bx bx-dots-horizontal-rounded'></i></a>
+                                                </div>
+                                                <span class="d-block comment-created-time">30 min ago</span>
+                                                <p class="fs-8 pt-2">
+                                                    Lorem ipsum dolor sit amet,
+                                                    consectetur adipiscing elit.
+                                                    Lorem ipsum dolor sit amet, <a
+                                                        href="#">#consecteturadipiscing </a>.
+                                                </p>
+                                                <div class="commentLR">
+                                                    <button type="button"
+                                                            class="btn btn-link fs-8">
+                                                        Like
+                                                    </button>
+                                                    <button type="button"
+                                                            class="btn btn-link fs-8">
+                                                        Reply
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="media">
+                                            <a href="#" class="pull-left">
+                                                <img src="https://bootdey.com/img/Content/user_2.jpg"
+                                                     alt="" class="img-circle">
+                                            </a>
+                                            <div class="media-body">
+                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                    <strong class="text-gray-dark"><a
+                                                            href="#" class="fs-8">Lia
+                                                        Earnest</a></strong>
+                                                    <a href="#"><i
+                                                            class='bx bx-dots-horizontal-rounded'></i></a>
+                                                </div>
+                                                <span class="d-block comment-created-time">2 hours ago</span>
+                                                <p class="fs-8 pt-2">
+                                                    Lorem ipsum dolor sit amet,
+                                                    consectetur adipiscing elit.
+                                                    Lorem ipsum dolor sit amet, <a
+                                                        href="#">#consecteturadipiscing </a>.
+                                                </p>
+                                                <div class="commentLR">
+                                                    <button type="button"
+                                                            class="btn btn-link fs-8">
+                                                        Like
+                                                    </button>
+                                                    <button type="button"
+                                                            class="btn btn-link fs-8">
+                                                        Reply
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="media">
+                                            <a href="#" class="pull-left">
+                                                <img src="https://bootdey.com/img/Content/user_3.jpg"
+                                                     alt="" class="img-circle">
+                                            </a>
+                                            <div class="media-body">
+                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                    <strong class="text-gray-dark"><a
+                                                            href="#" class="fs-8">Rusty
+                                                        Mickelsen</a></strong>
+                                                    <a href="#"><i
+                                                            class='bx bx-dots-horizontal-rounded'></i></a>
+                                                </div>
+                                                <span class="d-block comment-created-time">17 hours ago</span>
+                                                <p class="fs-8 pt-2">
+                                                    Lorem ipsum dolor sit amet,
+                                                    consectetur adipiscing elit.
+                                                    Lorem ipsum dolor sit amet, <a
+                                                        href="#">#consecteturadipiscing </a>.
+                                                </p>
+                                                <div class="commentLR">
+                                                    <button type="button"
+                                                            class="btn btn-link fs-8">
+                                                        Like
+                                                    </button>
+                                                    <button type="button"
+                                                            class="btn btn-link fs-8">
+                                                        Reply
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="media">
+                                            <div class="media-body">
+                                                <div class="comment-see-more text-center">
+                                                    <button type="button"
+                                                            class="btn btn-link fs-8">
+                                                        See More
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+    {% endif %}
+
+    {% endfor %}
