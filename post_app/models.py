@@ -2,7 +2,7 @@ from django.db import models
 from home.models import *
 from django.db.models import Q
 # Create your models here.
-
+from home.models import UserProfile
 
 REACTIONS = (
     ('like','Like'),
@@ -13,12 +13,22 @@ REACTIONS = (
     ('angry', 'Angry'),
     ('none','None'),
 )
+
 class PostReaction(models.Model):
     post_slug = models.CharField(max_length=500)
     user = models.ForeignKey(UserProfile,related_name='reacted_user',on_delete=models.CASCADE)
     reaction_type = models.CharField(max_length=500,choices= REACTIONS)
     def __str__(self):
         return f' {self.user} : {self.post_slug} : {self.reaction_type}'
+
+class PostComment(models.Model):
+    post_slug = models.CharField(max_length=500)
+    user = models.ForeignKey(UserProfile,related_name='comment_user',on_delete=models.CASCADE)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} : {self.pos_slug}"
 
 
 
@@ -32,17 +42,24 @@ class UserPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     snap_message = models.CharField(blank=True,null=True,max_length=800)
 
-    users_reacted = models.ManyToManyField(UserProfile,related_name= 'users_reacted_list')
+    def Post_Reactions(self):
+        reactions = PostReaction.objects.filter(post_slug = self.slug)
+        return reactions
 
+    def Post_Comments(self):
+        comments = PostComment.objects.filter(post_slug = self.slug)
+        return comments
 
+    def reacted_users_list(self):
+        reactions = self.Post_Reactions()
+        return [reaction.user for reaction in reactions]
+
+    def comments_user_list(self):
+        comments = self.Post_Comments()
+        return [ comment.user for comment in comments]
 
     def __str__(self):
         return f"< {self.user.username} : {self.slug} : {self.created_at}"
-
-
-
-    def __str__(self):
-        return f"< {self.user} : {self.post_slug} : {self.reaction_type}"
 
 class SavedPost(models.Model):
     user = models.ForeignKey(UserProfile,on_delete=models.CASCADE)

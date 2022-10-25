@@ -1,5 +1,7 @@
+import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import *
@@ -44,10 +46,18 @@ class HomeView(BaseView):
 
 # view to set all users notificatins as marked
 @login_required
-def mark_as_read(request):
-    request.user.notifications.mark_all_as_read()
-    return redirect(request.META.get('HTTP_REFERER'))
+def mark_as_read_delete(request):
+    if request.method == 'GET':
+        if request.GET['mark'] == 'read':
+            request.user.notifications.mark_all_as_read()
+        elif request.GET['mark'] == 'delete':
+            request.user.notifications.all().delete()
+        else:
+            pass
 
+        return HttpResponse('marked')
+    else:
+        return HttpResponse('invalid request')
 
 class SignUpView(View):
     def post(self, request, *args, **kwargs):
@@ -124,16 +134,10 @@ class ProfileView(BaseView):
         # get user posts
         self.view['User_Posts'] = UserPost.objects.filter(user=self.view['User_Profile']).order_by('-created_at')
 
-        try:
-            self.view['Hidden_Posts'] = HiddenPost.objects.filter(
-                reduce(operator.and_, (Q(post=p) for p in self.view['User_Posts'])),
-                user=request.user, is_hidden=True)
-        except:
-            pass
-
+        self.view['Hidden_Posts'] = HiddenPost.objects.filter(post__in = [post for post in self.view['User_Posts']],user = request.user, is_hidden = True,)
         h_post_id = [h_post.post.id for h_post in self.view['Hidden_Posts']]
-
-        self.view['Hidden_Posts'] = UserPost.objects.filter(id__in=h_post_id)
+        self.view['Hidden_Posts'] = UserPost.objects.filter(id__in = h_post_id)
+        print(self.view['Hidden_Posts'])
 
     def get(self, request, username):
         self.view
@@ -141,14 +145,11 @@ class ProfileView(BaseView):
         return render(request, 'profile.html', self.view)
 
 
+
 class AboutView(ProfileView):
     def get(self, request, username):
         self.view
         self.get_user(request, username)
-        slugs = [post.slug for post in self.view['User_Posts']]
-
-        self.view['Post_Reactions'] = PostReaction.objects.filter(post_slug__in = slugs)
-
         return render(request, 'about.html', self.view)
 
 

@@ -1,0 +1,197 @@
+
+{% load static %}
+
+<div class="argon-reaction">
+            <span class="like-btn">
+                <a href="#" class="post-card-buttons">
+
+                    {% if request.user in post.reacted_users_list %}
+                            {% for reaction in post.Post_Reactions %}
+                                        {% if reaction.user == request.user %}
+                                        <button class="btn"><img id='reaction-img-{{post.slug}}' src = "/static/assets/images/icons/reactions/{{reaction.reaction_type}}.gif" style="width:28px;height:28px;"></button>
+                                        {% endif %}
+                                {% endfor %}
+                    {% else %}
+                            <button class="btn"><img id='reaction-img-{{post.slug}}' src="{% static 'assets/images/icons/reactions/like_outline.png' %}" style="width:28px;height:28px;"></button>
+                    {% endif %}
+
+                    <span id='reaction-count-{{post.slug}}'>{{post.Post_Reactions.count }}</span>
+                </a>
+                <ul class="reactions-box dropdown-shadow">
+                    <li class="reaction reaction-like" post-id="{{post.slug}}" id='like_reaction_{{post.slug}}'
+                        data-reaction="Like"></li>
+                    <li class="reaction reaction-love" post-id="{{post.slug}}" id='love_reaction_{{post.slug}}'
+                        data-reaction="Love"></li>
+                    <li class="reaction reaction-haha" post-id="{{post.slug}}" id='haha_reaction_{{post.slug}}'
+                        data-reaction="HaHa"></li>
+                    <li class="reaction reaction-wow" post-id="{{post.slug}}" id='wow_reaction_{{post.slug}}'
+                        data-reaction="Wow"></li>
+                    <li class="reaction reaction-sad" post-id="{{post.slug}}" id='sad_reaction_{{post.slug}}'
+                        data-reaction="Sad"></li>
+                    <li class="reaction reaction-angry" post-id="{{post.slug}}" id='angry_reaction_{{post.slug}}'
+                        data-reaction="Angry"></li>
+                </ul>
+            </span>
+        </div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script type="text/javascript">
+
+        $('#like_reaction_{{post.slug}}').click(function(){
+            var slug = $(this).attr("post-id");
+            $.ajax(
+            {
+                type:"POST",
+                url: "/posts/like-unlike-post",
+                data:{
+                    post_slug: slug,
+                    reaction: 'like',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+
+                success: function( data )
+                {
+                    if ( data.reacted == true){
+                        $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/like.gif' %}");
+                        }
+
+                        else{
+                            $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/like_outline.png' %}");
+                        }
+                    $( '#reaction-count-{{post.slug}}').text(data.total_reactions);
+                }
+            })
+        });
+
+
+        $('#love_reaction_{{post.slug}}').click(function(){
+            var slug = $(this).attr("post-id");
+            $.ajax(
+            {
+                type:"POST",
+                url: "/posts/like-unlike-post",
+                data:{
+                    post_slug: slug,
+                    reaction: 'love',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+
+                success: function( data )
+                {
+                    if ( data.reacted == true){
+                        $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/love.gif' %}");
+                        }
+
+                        else{
+                            $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/like_outline.png' %}");
+                        }
+                    $( '#reaction-count-{{post.slug}}' ).text(data.total_reactions);
+                }
+            })
+        });
+        $('#haha_reaction_{{post.slug}}').click(function(){
+            var slug = $(this).attr("post-id");
+            $.ajax(
+            {
+                type:"POST",
+                url: "/posts/like-unlike-post",
+                data:{
+                    post_slug: slug,
+                    reaction: 'haha',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+
+                success: function( data )
+                {
+                    if ( data.reacted == true){
+                        $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/haha.gif' %}");
+                        }
+
+                        else{
+                            $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/like_outline.png' %}");
+                        }
+                    $( '#reaction-count-{{post.slug}}' ).text(data.total_reactions);
+                }
+            })
+        });
+
+        $('#sad_reaction_{{post.slug}}').click(function(){
+            var slug = $(this).attr("post-id");
+            $.ajax(
+            {
+                type:"POST",
+                url: "/posts/like-unlike-post",
+                data:{
+                    post_slug: slug,
+                    reaction: 'sad',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+
+                success: function( data )
+                {
+                    if ( data.reacted == true){
+                        $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/sad.gif' %}");
+                        }
+
+                        else{
+                            $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/like_outline.png' %}");
+                        }
+                    $( '#reaction-count-{{post.slug}}' ).text(data.total_reactions);
+                }
+            })
+        });
+
+        $('#wow_reaction_{{post.slug}}').click(function(){
+            var slug = $(this).attr("post-id");
+            $.ajax(
+            {
+                type:"POST",
+                url: "/posts/like-unlike-post",
+                data:{
+                    post_slug: slug,
+                    reaction: 'wow',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+
+                success: function( data )
+                {
+                    if ( data.reacted == true){
+                        $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/wow.gif' %}");
+                        }
+
+                        else{
+                            $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/like_outline.png' %}");
+                        }
+                    $( '#reaction-count-{{post.slug}}' ).text(data.total_reactions);
+                }
+            })
+        });
+
+        $('#angry_reaction_{{post.slug}}').click(function(){
+            var slug = $(this).attr("post-id");
+            $.ajax(
+            {
+                type:"POST",
+                url: "/posts/like-unlike-post",
+                data:{
+                    post_slug: slug,
+                    reaction: 'angry',
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+
+                success: function( data )
+                {
+                    if ( data.reacted == true){
+                        $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/angry.gif' %}");
+                        }
+
+                        else{
+                            $( '#reaction-img-{{post.slug}}' ).attr("src","{% static 'assets/images/icons/reactions/like_outline.png' %}");
+                        }
+                    $( '#reaction-count-{{post.slug}}' ).text(data.total_reactions);
+                }
+            })
+        });
+    </script>

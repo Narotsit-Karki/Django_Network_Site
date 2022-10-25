@@ -231,26 +231,72 @@ function myFunction() {
                             <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Notifications <span id ="not-badge-inner"
                                     class="badge badge-pill badge-primary ml-2">{% notifications_unread %}</span></div>
                             <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                <a href = '/mark-as-read' id ="#notific"  class="notify-right-icon">
-                                    Mark All as Read
+                                <a href = '#' id ="notific-read"  class="notify-right-icon">
+                                    Mark All as Read /
+                                </a>
+                                 <a href = '#' id ="notific-delete"  class="notify-right-icon">
+                                    Mark All as Delete
                                 </a>
                             </div>
+                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+                            <script>
+
+                                $('#notific-read').click(
+                                    function(){
+                                     $.ajax(
+                                            {
+                                            type:  "GET",
+                                            url: "{% url 'mark-as-read-delete' %}",
+                                            data: {
+                                                mark: 'read'
+                                                },
+                                            success: function( data ){
+                                                if (data == 'marked'){
+                                                $("#not-badge-inner").text(0);
+                                                $("#not-badge-outer").text(0);
+                                                $("#unread-mark").attr('class','bx bx-check');
+                                                }
+                                             }
+                                            })
+                                 });
+
+                               $('#notific-delete').click(
+                                    function(){
+                                     $.ajax(
+                                            {
+                                            type:"GET",
+                                            url: "{% url 'mark-as-read-delete' %}",
+                                            data: {
+                                                mark: 'delete'
+                                                },
+                                            success: function( data ){
+                                                if (data == 'marked'){
+                                                    $("#not-badge-inner").text(0);
+                                                    $("#not-badge-outer").text(0);
+                                                    $("#notification-list-1").remove();
+                                                }
+                                                }
+                                            })
+                                 });
+
+                            </script>
                         </div>
                     </div>
                     <!-- end notify title -->
                     <!-- notify content -->
                     <div class="drop-content">
                         {% for notification in request.user.notifications.all %}
-
-                        <li>
+                        <li id = 'notification-list-1'>
 
                             <div class="col-md-2 col-sm-2 col-xs-2">
                                 <a href = '/profile/{{notification.actor.username}}'>
                                 <div class="notify-img">
                                     <img not-id="{{notification.id}}" src="{{notification.actor.profile_pic.url }}" alt="notification user image">
                                 </div>
+                                </a>
                             </div>
                             <div class="col-md-10 col-sm-10 col-xs-10">
+                                <a href = '/profile/{{notification.actor.username}}'>
                                 <a href="#" class="notification-user">{{notification.actor.username}}</a> <span
                                     class="notification-type" style="font-size:0.8rem;">{{notification.description}}</span><a href="#" class="notification-for"></a>
 
@@ -260,16 +306,17 @@ function myFunction() {
                                     </a>
                                 {% else %}
                                     <a href="#" class="notify-right-icon mt-4">
-                                        <i class='bx bx-radio-circle-marked'></i>
+                                        <i id ='unread-mark' class='bx bx-radio-circle-marked'></i>
                                     </a>
                                 {% endif %}
 
                                 <p class="time">
-                                    <span class="badge badge-{{notification.verb}} badge-primary"><i class='bx bxs-group'></i></span>
+                                    <span class="badge badge-{{notification.verbf}} badge-primary"><i class='bx bxs-group'></i></span>
                                     {{notification.timestamp}}
                                 </p>
+                                    </a>
                             </div>
-                        </a>
+
                         </li>
                         {% endfor %}
 

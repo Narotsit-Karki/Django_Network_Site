@@ -6,9 +6,6 @@
         white-space: nowrap;
         text-align : center;
     }
-
-
-
 </style>
 <body class="profile">
 <div class="container-fluid newsfeed d-flex" id="wrapper">
@@ -21,15 +18,6 @@
                         <a href="#" class="profile-cover">
                             <img src="{% static 'assets/images/users/cover/cover-1.gif' %}"
                                  alt="Profile Header Background">
-                            <div class="cover-overlay">
-                                {% if User_Profile == request.user %}
-                                <label for="updateProfilePic_2" class="upload" style="white-space:no-wrap;">
-                                    <i class='bx bxs-camera'></i> Update Cover
-                                    <input type="file" id="updateProfilePicInput_1" class="text-center upload">
-                                </label>
-
-                                {% endif %}
-                            </div>
                         </a>
                     </div>
                     <div class="row profile-rows">
@@ -37,25 +25,17 @@
                             <div class="profile-info-left">
                                 <div class="text-center">
                                     <div class="profile-img w-shadow">
-                                        {% if User_Profile == request.user %}
-                                        <div class="profile-img-overlay"></div>
-                                        {% endif %}
+
                                         <img src="{{ User_Profile.profile_pic.url}}" alt="Avatar"
                                              class="avatar img-circle img-fluid" style="object-fit:contain;">
                                         <div class="profile-img-caption">
-                                            {% if User_Profile == request.user %}
-                                            <label for="updateProfilePic" class="upload">
-                                                <i class='bx bxs-camera'></i> Update
-                                                <input type="file" id="updateProfilePicInput"
-                                                       class="text-center upload">
-                                            </label>
-                                            {% endif %}
                                         </div>
                                     </div>
                                     <p class="profile-fullname mt-3">{{User_Profile.first_name}}
                                         {{User_Profile.last_name}}</p>
                                     <p class="profile-username mb-3 text-muted">@{{User_Profile.username}}</p>
                                 </div>
+
                                 {% if User_Profile != request.user %}
                                 <div class="intro mt-4">
                                     <div class="d-flex">
@@ -246,26 +226,25 @@
 
                                         </div>
 
-                                              {% if Saved_Posts.count == 0 %}
-                                             <div class="bg-white profile-posts-options mt-5 mb-4 py-3 d-flex justify-content-between shadow-sm">
-                                                    <div class="col-md-12 ">
-                                                    <h5 class="timeline-title text-muted">You can save posts in this area</h5>
-                                                    </div>
-                                             </div>
+                                        {% if Saved_Posts.count == 0 %}
+                                        <div class="bg-white profile-posts-options mt-5 mb-4 py-3 d-flex justify-content-between shadow-sm">
+                                            <div class="col-md-12 ">
+                                                <h5 class="timeline-title text-muted">You can save posts in this
+                                                    area</h5>
+                                            </div>
+                                        </div>
 
-                                            {% endif %}
+                                        {% endif %}
 
                                         <!--  saved Post Starts Here-->
                                         {% for post in Saved_Posts %}
-
                                         <div class="post border-bottom p-3 bg-white w-shadow">
                                             <div class="media text-muted pt-3">
                                                 <img src="{{ post.user.profile_pic.url }}" alt="Online user"
                                                      class="mr-3 post-user-image">
                                                 <div class="media-body pb-3 mb-0 small lh-125">
                                                     <div class="d-flex justify-content-between align-items-center w-100">
-                                                        <span class="post-type text-muted"><a href="#"
-                                                                                              class="text-gray-dark post-user-name mr-2">{{post.user.first_name}} {{post.user.last_name}}</a></span>
+                                                        <span class="post-type text-muted"><a href="#" class="text-gray-dark post-user-name mr-2">{{post.user.first_name}} {{post.user.last_name}}</a></span>
                                                         <div class="dropdown">
                                                             <a href="#" class="post-more-settings" role="button"
                                                                data-toggle="dropdown" id="postOptions"
@@ -273,28 +252,28 @@
                                                                 <i class='bx bx-dots-horizontal-rounded'></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left post-dropdown-menu">
-                                                                {% if post.user != request.user %}
-                                                                <a href='#' class="dropdown-item"
-                                                                   aria-describedby="savePost">
+<!--                                                                Unsaving post-->
+                                                                <a role="button" href="#" class="dropdown-item"
+                                                                   aria-describedby="hidePost">
                                                                     <div class="row"
                                                                          onclick="location.href = '/posts/save-unsave-post/{{post.slug}}'">
                                                                         <div class="col-md-2">
-                                                                            <i class='bx bx-bookmark-plus post-option-icon'></i>
+                                                                            <i class='bx bx-hide post-option-icon'></i>
                                                                         </div>
                                                                         <div class="col-md-10">
                                                                             <span class="fs-9">Unsave post</span>
-                                                                            <small id="savePost"
-                                                                                   class="form-text text-muted">remove this
-                                                                                from your saved items</small>
+                                                                            <small id="hidePost"
+                                                                                   class="form-text text-muted">remove
+                                                                                this post from saved</small>
                                                                         </div>
                                                                     </div>
                                                                 </a>
-                                                                {% endif %}
+
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <span class="d-block">{{ post.created_at }}  ·
-                                                        <i class='bx bxs-group '></i></span>
+                                                    <span class="d-block">{{ post.created_at }}  · <i
+                                                            class='bx bxs-group '></i></span>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
@@ -307,7 +286,7 @@
                                                      class="w-100 mb-3" alt="post image">
                                                 {% else %}
                                                 <video id="my_video_post" class="video-js vjs-default-skin post-content"
-                                                       width="640px" height="400px" controls='True'
+                                                       width="640px" height="400px" controls
                                                        data-setup='{ "aspectRatio":"640:400", "playbackRates": [1, 1.5, 2] }'>
                                                     <source src="{{post.post_video.url}}" type='video/mp4'/>
 
@@ -318,23 +297,28 @@
                                             <div class="mb-2">
 
                                                 <!-- Reactions -->
-                                                <div class="argon-reaction">
-            <span class="like-btn">
-                <a href="#" class="post-card-buttons" id="reactions">
-                    <i class='bx bxs-like mr-2'></i> {{post.post_likes}}
-                </a>
-                <ul class="reactions-box dropdown-shadow">
-                    <li class="reaction reaction-like" data-reaction="Like"></li>
-                    <li class="reaction reaction-love" data-reaction="Love"></li>
-                    <li class="reaction reaction-haha" data-reaction="HaHa"></li>
-                    <li class="reaction reaction-wow" data-reaction="Wow"></li>
-                    <li class="reaction reaction-sad" data-reaction="Sad"></li>
-                    <li class="reaction reaction-angry" data-reaction="Angry"></li>
-                </ul>
-            </span>
-                                                </div>
+                                                {% include 'reaction_base.html' %}
+
+
                                                 <a href="javascript:void(0)" class="post-card-buttons"
-                                                   id="show-comments"><i class='bx bx-message-rounded mr-2'></i>{{post.post_comments}}</a>
+                                                   id="show-comments-{{post.slug}}">
+                                                    <button class="btn"><img
+                                                            src="{% static 'assets/images/icons/reactions/comments.png' %}"
+                                                            style="width:28px;height:28px;"></button>
+                                                    {{ post.Post_Comments.count }}
+                                                </a>
+
+                                                <script>
+                                                    // Show comment section
+                                                    $(document).ready(function () {
+                                                    $('#show-comments-{{post.slug}}').click(function () {
+                                                    $('#hide-comments-{{post.slug}}').slideToggle("slow");
+                                                    // Alternative animation for example
+                                                    // slideToggle("fast");
+                                                    });
+                                                    });
+                                                </script>
+
                                                 <div class="dropdown dropup share-dropup">
                                                     <a href="#" class="post-card-buttons" data-toggle="dropdown"
                                                        aria-haspopup="true" aria-expanded="false">
@@ -373,182 +357,155 @@
                                                         </a>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="border-top pt-3 hide-comments" style="display: none;">
-                                                <div class="row bootstrap snippets">
-                                                    <div class="col-md-12">
-                                                        <div class="comment-wrapper">
-                                                            <div class="panel panel-info">
-                                                                <div class="panel-body">
-                                                                    <ul class="media-list comments-list">
-                                                                        <li class="media comment-form">
-                                                                            <a href="/profile/request.user.username}}"
-                                                                               class="pull-left">
-                                                                                <img src="{{request.user.profile_pic.url }}"
-                                                                                     alt="" class="img-circle">
-                                                                            </a>
-                                                                            <div class="media-body">
-                                                                                <form action="" method="" role="form">
-                                                                                    <div class="row">
-                                                                                        <div class="col-md-12">
-                                                                                            <div class="input-group">
-                                                                                                <input type="text"
-                                                                                                       class="form-control comment-input"
-                                                                                                       placeholder="Write a comment...">
 
-                                                                                                <div class="input-group-btn">
-                                                                                                    <button type="button"
-                                                                                                            class="btn comment-form-btn"
-                                                                                                            data-toggle="tooltip"
-                                                                                                            data-placement="top"
-                                                                                                            title="Tooltip on top">
-                                                                                                        <i class='bx bxs-smiley-happy'></i>
-                                                                                                    </button>
-                                                                                                    <button type="button"
-                                                                                                            class="btn comment-form-btn comment-form-btn"
-                                                                                                            data-toggle="tooltip"
-                                                                                                            data-placement="top"
-                                                                                                            title="Tooltip on top">
-                                                                                                        <i class='bx bx-camera'></i>
-                                                                                                    </button>
-                                                                                                    <button type="button"
-                                                                                                            class="btn comment-form-btn comment-form-btn"
-                                                                                                            data-toggle="tooltip"
-                                                                                                            data-placement="top"
-                                                                                                            title="Tooltip on top">
-                                                                                                        <i class='bx bx-microphone'></i>
-                                                                                                    </button>
-                                                                                                    <button type="button"
-                                                                                                            class="btn comment-form-btn"
-                                                                                                            data-toggle="tooltip"
-                                                                                                            data-placement="top"
-                                                                                                            title="Tooltip on top">
-                                                                                                        <i class='bx bx-file-blank'></i>
-                                                                                                    </button>
+                                                <!--            Comment Sections-->
+                                                <div class="border-top pt-3 " id="hide-comments-{{post.slug}}"
+                                                     style="display: none;">
+                                                    <div class="row bootstrap snippets">
+                                                        <div class="col-md-12">
+                                                            <div class="comment-wrapper">
+                                                                <div class="panel panel-info">
+                                                                    <div class="panel-body">
+                                                                        <ul class="media-list comments-list">
+                                                                            <li class="media comment-form">
+                                                                                <a href="/profile/{{request.user.username}}"
+                                                                                   class="pull-left">
+                                                                                    <img src="{{request.user.profile_pic.url }}"
+                                                                                         alt="" class="img-circle">
+                                                                                </a>
+                                                                                <div class="media-body">
+                                                                                    <form action="{% url 'post-comment' post.slug %}"
+                                                                                          method="POST" role="form">
+                                                                                        {% csrf_token %}
+                                                                                        <div class="row">
+                                                                                            <div class="col-md-12">
+                                                                                                <div class="input-group">
+                                                                                                    <input type="text"
+                                                                                                           name="comment"
+                                                                                                           required
+                                                                                                           class="form-control comment-input"
+                                                                                                           placeholder="Write a comment...">
+
+                                                                                                    <div class="input-group-btn">
+                                                                                                        <button type="submit"
+                                                                                                                class="btn comment-form-btn"
+                                                                                                                data-toggle="tooltip"
+                                                                                                                data-placement="top"
+                                                                                                                title="Tooltip on top">
+                                                                                                            <i class='bx bxs-paper-plane'></i>
+                                                                                                        </button>
+                                                                                                        <button type="button"
+                                                                                                                class="btn comment-form-btn comment-form-btn"
+                                                                                                                data-toggle="tooltip"
+                                                                                                                data-placement="top"
+                                                                                                                title="Tooltip on top">
+                                                                                                            <i class='bx bx-camera'></i>
+                                                                                                        </button>
+                                                                                                        <button type="button"
+                                                                                                                class="btn comment-form-btn comment-form-btn"
+                                                                                                                data-toggle="tooltip"
+                                                                                                                data-placement="top"
+                                                                                                                title="Tooltip on top">
+                                                                                                            <i class='bx bx-microphone'></i>
+                                                                                                        </button>
+                                                                                                        <button type="button"
+                                                                                                                class="btn comment-form-btn"
+                                                                                                                data-toggle="tooltip"
+                                                                                                                data-placement="top"
+                                                                                                                title="Tooltip on top">
+                                                                                                            <i class='bx bx-file-blank'></i>
+                                                                                                        </button>
+                                                                                                    </div>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </li>
+                                                                            <!--                                            All Comments -->
+
+                                                                            {% for post_comment in post.Post_Comments %}
+
+                                                                            <li class="media">
+                                                                                <a href="/profile/{{post_comment.user.username}}"
+                                                                                   class="pull-left">
+                                                                                    <img src="{{post_comment.user.profile_pic.url}}"
+                                                                                         alt="" class="img-circle">
+                                                                                </a>
+                                                                                <div class="media-body">
+                                                                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                                                                        <strong class="text-gray-dark">
+                                                                                            <a href="/profile/{{post_comment.user.username}}"
+                                                                                               class="fs-8">
+                                                                                                {{post_comment.user.username
+                                                                                                }}</a></strong>
                                                                                     </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li class="media">
-                                                                            <a href="#" class="pull-left">
-                                                                                <img src="{% static 'assets/images/users/user-2.jpg' %}"
-                                                                                     alt="" class="img-circle">
-                                                                            </a>
-                                                                            <div class="media-body">
-                                                                                <div class="d-flex justify-content-between align-items-center w-100">
-                                                                                    <strong class="text-gray-dark"><a
-                                                                                            href="#" class="fs-8">Karen
-                                                                                        Minas</a></strong>
-                                                                                    <a href="#"><i
-                                                                                            class='bx bx-dots-horizontal-rounded'></i></a>
+                                                                                    <span class="d-block comment-created-time">{{ post_comment.created_at }}</span>
+
+
+                                                                                    <!--                                                Edit Comment-->
+                                                                                    {% if request.user == post_comment.user %}
+                                                                                    <form action="/posts/edit-comment/{{post.slug}}/{{post_comment.id}}"
+                                                                                          method="POST">
+                                                                                        {% csrf_token %}
+                                                                                        <div class="input-group mt-2 mb-2">
+
+                                                                                            <input type="text"
+                                                                                                   class="form-control comment-input"
+                                                                                                   name='edit-comment'
+                                                                                                   value="{{post_comment.comment}}"
+                                                                                                   placeholder="Edit your comment">
+                                                                                            <div class="input-group-btn">
+                                                                                                <button type="submit"
+                                                                                                        class="btn comment-form-btn"
+                                                                                                        data-toggle="tooltip"
+                                                                                                        data-placement="top"
+                                                                                                        title="Tooltip on top">
+                                                                                                    <i class='bx bxs-paper-plane'></i>
+                                                                                                </button>
+                                                                                                <button type="button"
+                                                                                                        onclick="location.href = '/posts/delete-comment/{{post.slug}}/{{post_comment.id}}'"
+                                                                                                        class="btn comment-form-btn"
+                                                                                                        data-toggle="tooltip"
+                                                                                                        data-placement="top"
+                                                                                                        title="Tooltip on top">
+                                                                                                    <i class='bx bxs-trash'></i>
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                    {% else %}
+                                                                                    <p class="fs-8 pt-2"
+                                                                                       id='post_description_{{post_comment.slug}}_{{post_comment.id}}'>
+                                                                                        {{ post_comment.comment }}
+                                                                                    </p>
+                                                                                    {% endif %}
+                                                                                    <div class="commentLR">
+                                                                                        <button type="button"
+                                                                                                class="btn btn-link fs-8">
+                                                                                            Like
+                                                                                        </button>
+                                                                                        <button type="button"
+                                                                                                class="btn btn-link fs-8">
+                                                                                            Reply
+                                                                                        </button>
+                                                                                    </div>
                                                                                 </div>
-                                                                                <span class="d-block comment-created-time">30 min ago</span>
-                                                                                <p class="fs-8 pt-2">
-                                                                                    Lorem ipsum dolor sit amet,
-                                                                                    consectetur adipiscing elit.
-                                                                                    Lorem ipsum dolor sit amet, <a
-                                                                                        href="#">#consecteturadipiscing </a>.
-                                                                                </p>
-                                                                                <div class="commentLR">
-                                                                                    <button type="button"
-                                                                                            class="btn btn-link fs-8">
-                                                                                        Like
-                                                                                    </button>
-                                                                                    <button type="button"
-                                                                                            class="btn btn-link fs-8">
-                                                                                        Reply
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li class="media">
-                                                                            <a href="#" class="pull-left">
-                                                                                <img src="https://bootdey.com/img/Content/user_2.jpg"
-                                                                                     alt="" class="img-circle">
-                                                                            </a>
-                                                                            <div class="media-body">
-                                                                                <div class="d-flex justify-content-between align-items-center w-100">
-                                                                                    <strong class="text-gray-dark"><a
-                                                                                            href="#" class="fs-8">Lia
-                                                                                        Earnest</a></strong>
-                                                                                    <a href="#"><i
-                                                                                            class='bx bx-dots-horizontal-rounded'></i></a>
-                                                                                </div>
-                                                                                <span class="d-block comment-created-time">2 hours ago</span>
-                                                                                <p class="fs-8 pt-2">
-                                                                                    Lorem ipsum dolor sit amet,
-                                                                                    consectetur adipiscing elit.
-                                                                                    Lorem ipsum dolor sit amet, <a
-                                                                                        href="#">#consecteturadipiscing </a>.
-                                                                                </p>
-                                                                                <div class="commentLR">
-                                                                                    <button type="button"
-                                                                                            class="btn btn-link fs-8">
-                                                                                        Like
-                                                                                    </button>
-                                                                                    <button type="button"
-                                                                                            class="btn btn-link fs-8">
-                                                                                        Reply
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li class="media">
-                                                                            <a href="#" class="pull-left">
-                                                                                <img src="https://bootdey.com/img/Content/user_3.jpg"
-                                                                                     alt="" class="img-circle">
-                                                                            </a>
-                                                                            <div class="media-body">
-                                                                                <div class="d-flex justify-content-between align-items-center w-100">
-                                                                                    <strong class="text-gray-dark"><a
-                                                                                            href="#" class="fs-8">Rusty
-                                                                                        Mickelsen</a></strong>
-                                                                                    <a href="#"><i
-                                                                                            class='bx bx-dots-horizontal-rounded'></i></a>
-                                                                                </div>
-                                                                                <span class="d-block comment-created-time">17 hours ago</span>
-                                                                                <p class="fs-8 pt-2">
-                                                                                    Lorem ipsum dolor sit amet,
-                                                                                    consectetur adipiscing elit.
-                                                                                    Lorem ipsum dolor sit amet, <a
-                                                                                        href="#">#consecteturadipiscing </a>.
-                                                                                </p>
-                                                                                <div class="commentLR">
-                                                                                    <button type="button"
-                                                                                            class="btn btn-link fs-8">
-                                                                                        Like
-                                                                                    </button>
-                                                                                    <button type="button"
-                                                                                            class="btn btn-link fs-8">
-                                                                                        Reply
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </li>
-                                                                        <li class="media">
-                                                                            <div class="media-body">
-                                                                                <div class="comment-see-more text-center">
-                                                                                    <button type="button"
-                                                                                            class="btn btn-link fs-8">
-                                                                                        See More
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
+                                                                            </li>
+
+                                                                            {% endfor %}
+<!--Saved Posts Sections ends-->
+                                                                        </ul>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
                                         {% endfor %}
+
                                     </div>
                                 </div>
                             </div>

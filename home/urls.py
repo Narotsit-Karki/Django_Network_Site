@@ -19,7 +19,7 @@ urlpatterns = [
     path('login-user',store_login_info,name = 'login-user'),
     path('logout/<slug>',logout_information,name = 'logout'),
     path('send-friend-request',send_friend_request_or_remove,name = 'friend-request'),
-    path('mark-as-read',mark_as_read,name = 'mark-as-read'),
+    path('mark-as-read-delete',mark_as_read_delete,name = 'mark-as-read-delete'),
     path('accept-friend-request',accept_friend_request,name = 'accept-friend-request'),
 
 ]

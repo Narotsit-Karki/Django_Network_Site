@@ -1,11 +1,4 @@
-// Show comment section
-$(document).ready(function () {
-    $('#show-comments').click(function () {
-        $('.hide-comments').slideToggle("slow");
-        // Alternative animation for example
-        // slideToggle("fast");
-    });
-});
+
 
 // Video.js
 $(function () {

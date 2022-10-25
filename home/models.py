@@ -16,6 +16,7 @@ GENDER = (
     ('','rather not say')
 )
 
+
 class UserProfile(AbstractUser):
     # username = models.CharField(max_length=400, unique= True)
     country = models.CharField(max_length=400)
@@ -35,6 +36,9 @@ class UserProfile(AbstractUser):
 
     def __str__(self):
         return f"{self.username}"
+
+    def Hidden_Post(self):
+        hidden_posts = HiddenPost.objects.filter(user = self)
 
     def last_seen(self):
         return cache.get(f'seen_{self.username}')
