@@ -14,6 +14,8 @@ urlpatterns = [
     path('profile/<username>',ProfileView.as_view(),name='profile'),
     path('profile/<username>/about',AboutView.as_view(),name = 'profile-about'),
     path('profile/<username>/saved',SavedView.as_view(), name = 'profile-saved'),
+    path('profile/<username>/friends',FriendView.as_view(), name = 'profile-friends'),
+
     path('search',SearchView.as_view(),name = 'search'),
     path('follow-unfollow-user',follow_unfollow_user,name = 'follow-unfollow'),
     path('login-user',store_login_info,name = 'login-user'),

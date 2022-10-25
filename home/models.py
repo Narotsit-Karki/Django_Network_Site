@@ -37,8 +37,6 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return f"{self.username}"
 
-    def Hidden_Post(self):
-        hidden_posts = HiddenPost.objects.filter(user = self)
 
     def last_seen(self):
         return cache.get(f'seen_{self.username}')
