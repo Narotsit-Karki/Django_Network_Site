@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" href="assets/images/logo-16x16.png"/>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Argon - Social Network</title>
+    <title>Angalo - Social Network</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Major+Mono+Display" rel="stylesheet">
@@ -193,7 +193,7 @@
                                                 <a href="/profile/{{User_Profile.username}}/friends">Friends</a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <a href="#">Photos</a>
+                                                <a href="/profile/{{User_Profile.username}}/photos">Photos</a>
                                             </li>
 
                                             <li class="list-inline-item dropdown">
@@ -227,7 +227,7 @@
                                                             {% if friend.username == request.user.username %}
                                                             <h5 class="card-text">@You</h5>
                                                             {% else %}
-                                                            h5 class="card-text">@{{friend.username}}</h5>
+                                                            <h5 class="card-text">@{{friend.username}}</h5>
                                                             {% endif %}
 
                                                             <h5 class="card-title">{{friend.first_name}} {{friend.last_name}}

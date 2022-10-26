@@ -11,7 +11,8 @@ urlpatterns = [
     path('like-unlike-post',like_unlike_post,name = 'like-unlike-post'),
     path('post-comment/<slug>',post_comment, name = 'post-comment'),
     path('delete-comment/<slug>/<id>',delete_comment,name = 'delete-comment'),
-    path('edit-comment/<slug>/<id>',edit_comment, name = 'edit-comment')
+    path('edit-comment/<slug>/<id>',edit_comment, name = 'edit-comment'),
+    path('add-photos/<username>',add_photos,name='add-photos')
 
 ]
 

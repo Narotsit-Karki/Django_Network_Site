@@ -76,3 +76,12 @@ class HiddenPost(models.Model):
         return f' < {self.user} : {self.post}'
 
 
+
+class UserImage(models.Model):
+    slug = models.CharField(max_length = 500)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    image = ResizedImageField(size = [800,800],upload_to= 'user_images')
+    date_uploaded = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user}::{self.slug}"

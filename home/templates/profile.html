@@ -6,6 +6,8 @@
         white-space: nowrap;
         text-align : center;
     }
+
+
 </style>
 
 <body class="profile">
@@ -17,17 +19,36 @@
                 <div class="user-profile">
                     <div class="profile-header-background">
                         <a href="#" class="profile-cover">
-                            <img src="{% static 'assets/images/users/cover/cover-1.gif' %}"
-                                 alt="Profile Header Background">
-                            <div class="cover-overlay">
-                                {% if User_Profile == request.user %}
-                                <label for="updateProfilePic_2" class="upload" style="white-space:no-wrap;">
-                                    <i class='bx bxs-camera'></i> Update Cover
-                                    <input type="file" id="updateProfilePicInput_1" class="text-center upload">
-                                </label>
+                            <img id='profile_background' src="{{User_Profile.background_pic.url}}"
+                                 alt="Profile Header Background" class='img-fluid' style="object-fit: cover;">
+                            <form method="POST" action="/profile/{{request.user.username}}/update-background"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="cover-overlay">
+                                    {% if User_Profile == request.user %}
+                                    <label for="updateProfilePic_2" id='profile_update' class="upload"
+                                           style="white-space:no-wrap;text-align:center;">
+                                        <i class='bx bxs-camera'></i> Update Cover<input required
+                                                                                         name='background_image'
+                                                                                         type="file"
+                                                                                         id="updateProfilePicInput_1"
+                                                                                         class="text-center upload">
+                                    </label>
 
-                                {% endif %}
-                            </div>
+                                    <div class="btn-group" id='update_button_group' style="display:none;">
+                                        <button id='upload_submit' type="submit" class="btn btn-success btn-sm">update
+                                        </button>
+
+                                        <button type="button" id='upload_cancel'
+                                                onclick="location.href='/profile/{{request.user.username}}'"
+                                                class="btn btn-danger btn-sm">cancel
+                                        </button>
+                                    </div>
+
+                                    {% endif %}
+                                </div>
+                            </form>
+
                         </a>
                     </div>
                     <div class="row profile-rows">
@@ -38,18 +59,32 @@
                                         {% if User_Profile == request.user %}
                                         <div class="profile-img-overlay"></div>
                                         {% endif %}
-                                        <img src="{{ User_Profile.profile_pic.url}}" alt="Avatar"
-                                             class="avatar img-circle img-fluid" style="object-fit:contain;">
-                                        <div class="profile-img-caption">
-                                            {% if User_Profile == request.user %}
-                                            <label for="updateProfilePic" class="upload">
-                                                <i class='bx bxs-camera'></i> Update
-                                                <input type="file" id="updateProfilePicInput"
-                                                       class="text-center upload">
-                                            </label>
-                                            {% endif %}
-                                        </div>
+                                        <img src="{{ User_Profile.profile_pic.url }}" alt="Avatar"
+                                             class="avatar img-circle img-fluid" id = "profile_pic" style="object-fit:contain;">
+                                        <form method="POST" action="/profile/{{request.user.username}}/update-profile"
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="profile-img-caption">
+                                                {% if User_Profile == request.user %}
+                                                <label class="upload" id='update_profile_pic'>
+                                                    <i class='bx bxs-camera'></i> Update
+                                                    <input type="file" id="updateProfilePicInput_2" class="text-center upload" name="profile_image">
+                                                </label>
+                                                {% endif %}
+                                                <div class="btn-group" id='update_button_group_1' style="display:none;">
+
+                                                    <button id='upload_submit_1' type="submit"
+                                                            class="btn btn-success btn-sm">update
+                                                    </button>
+                                                    <button type="button" id='upload_cancel_1'
+                                                            onclick="location.href='/profile/{{request.user.username}}'"
+                                                            class="btn btn-danger btn-sm">cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
+                                    {% include 'profile_and_background_update.js' %}
                                     <p class="profile-fullname mt-3">{{User_Profile.first_name}}
                                         {{User_Profile.last_name}}</p>
                                     <p class="profile-username mb-3 text-muted">@{{User_Profile.username}}</p>
@@ -167,7 +202,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="intro mt-5 row mv-hidden">
-                                    </div>
+                                </div>
                                 <div class="intro mt-5 mv-hidden">
                                 </div>
                             </div>
@@ -191,7 +226,7 @@
                                                 <a href="/profile/{{User_Profile.username}}/friends">Friends</a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <a href="#">Photos</a>
+                                                <a href="/profile/{{User_Profile.username}}/photos">Photos</a>
                                             </li>
                                             <li class="list-inline-item dropdown">
                                                 <a href="#" data-toggle="dropdown" aria-haspopup="true"
@@ -230,29 +265,40 @@
                                                     <div class="row post-form-group">
                                                         <div class="col-md-9">
 
-                                                            <label class="btn btn-link post-form-btn btn-md">
+                                                            <label class="btn btn-link post-form-btn btn-sm">
                                                                 <input style="display: none;" id='photo_1' type="file"
                                                                        name='photo_upload'/>
                                                                 <i class='bx bxs-image'></i> <span>Photo</span>
                                                             </label>
 
-                                                            <label class="btn btn-link post-form-btn btn-md">
+                                                            <label class="btn btn-link post-form-btn btn-sm">
                                                                 <input style="display: none;" id='video_1' type="file"
                                                                        name='video_upload'/>
                                                                 <i class='bx bxs-videos'></i> <span>Video</span>
                                                             </label>
 
                                                             <button type="button"
-                                                                    class="btn btn-link post-form-btn btn-md">
+                                                                    class="btn btn-link post-form-btn btn-sm">
                                                                 <i class='bx bxs-group'></i> <span>Tag Friends</span>
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-link post-form-btn btn-sm">
+                                                                <i class='bx bxs-map'></i> <span>Check In</span>
                                                             </button>
                                                         </div>
                                                         <script>
                                                        {% include 'photo_video_upload.js' %}
 
+
+
                                                         </script>
 
-                                                        <div class="col-md-3 text-right">
+                                                        <a href="/profile/{{request.user.username}}"
+                                                           style="display:none;" id='cancel_post'
+                                                           class='btn btn-primary btn-sm fs-8'>
+                                                            Cancel
+                                                        </a>
+                                                        <div class="col-md-2 text-right">
                                                             <button type="submit" class="btn btn-primary btn-sm">
                                                                 Publish
                                                             </button>

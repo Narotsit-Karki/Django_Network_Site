@@ -26,7 +26,8 @@ class UserProfile(AbstractUser):
     description = models.TextField(blank=True, null = True)
     gender = models.CharField(choices=GENDER,max_length=100, null = True)
     job = models.TextField(blank = True, null = True)
-    profile_pic = ResizedImageField(size = [ 512, 512],upload_to = 'profile_pic', default = 'default.png', null = True ,force_format = 'PNG')
+    profile_pic = ResizedImageField(editable=True,size = [ 512, 512],upload_to = 'profile_pic', default = 'default.png', null = True ,force_format = 'PNG')
+    background_pic = ResizedImageField(editable=True,size =[1200,600],upload_to= 'background_pic' ,default = 'default_cover.gif',null = True)
 
     user_friends = models.ManyToManyField('self',blank = True , symmetrical=False, related_name='users_friends')
     user_followers = models.ManyToManyField('self',blank = True , symmetrical= False,  related_name='users_followers')

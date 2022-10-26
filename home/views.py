@@ -2,7 +2,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import *
 
@@ -166,6 +166,11 @@ class FriendView(ProfileView):
         return render(request, 'friends.html', self.view)
 
 
+class PhotosView(ProfileView):
+    def get(self,request,username):
+        self.get_user(request, username)
+        self.view['User_Photos'] = UserImage.objects.filter(user = request.user).order_by('-date_uploaded')
+        return render(request, 'photos.html', self.view)
 
 
 class SavedView(ProfileView):
@@ -350,3 +355,51 @@ def logout_information(request, slug):
         pass
 
     return redirect("/accounts/logout")
+
+@login_required
+def update_background(request,username):
+    if request.method == "POST" and request.user.username == username:
+        user_obj = UserProfile.objects.get(username = username)
+        background_image = request.FILES.get('background_image')
+        if os.path.exists(user_obj.background_pic.path):
+            os.remove(user_obj.background_pic.path)
+
+        user_obj.background_pic = background_image
+        user_obj.save()
+
+
+    return redirect(request.META['HTTP_REFERER'])
+
+@login_required
+def update_profile_pic(request,username):
+    if request.method == "POST" and request.user.username == username:
+        user_obj = UserProfile.objects.get(username = username)
+        profile_image = request.FILES.get('profile_image')
+        if os.path.exists(user_obj.profile_pic.path):
+            os.remove(user_obj.profile_pic.path)
+
+        user_obj.profile_pic = profile_image
+        user_obj.save()
+
+
+        if request.user.gender == "male":
+            pronoun = 'his'
+        elif request.user.gender == "female":
+            pronoun = 'her'
+        else:
+            pronoun = 'the'
+
+        #create a new post for updated profile
+        profile_update_post = UserPost.objects.create(
+            user = request.user,
+            slug = os.urandom(6).hex(),
+            post_image = profile_image,
+            snap_message = f"updated {pronoun} profile picture"
+        )
+        profile_update_post.save()
+
+        # notify_all followers of user
+        notify.send(sender = request.user, recipient =request.user.user_followers.all(), verb  ='bxs-group', description = f"updated {pronoun} profile picture")
+
+    return redirect(request.META['HTTP_REFERER'])
+

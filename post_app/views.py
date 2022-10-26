@@ -75,9 +75,8 @@ def create_a_new_post(request):
             if request.user.user_followers.count() > 0:
                 notify.send(sender=request.user,
                         recipient=request.user.user_followers.all(),
-                        verb='Post Message',
+                        verb='bxs-images',
                         description=notification_messsage['new-post'],
-                        icon='images'
                         )
 
     return redirect(request.META['HTTP_REFERER'])
@@ -173,6 +172,11 @@ def post_comment(request,slug):
             comment = comment
             )
             new_comment.save()
+
+            # send notification
+            if request.user != post.user:
+                notify.send(sender = request.user , recipient = post.user, verb = 'bxs-quoute-right' , description = f'commented on your post {post.description[:30]}')
+
     return redirect(request.META['HTTP_REFERER'])
 
 
@@ -194,3 +198,16 @@ def edit_comment(request,slug,id):
 
     return redirect(request.META['HTTP_REFERER'])
 
+@login_required
+def add_photos(request,username):
+    if request.method == 'POST' and request.user.username == username:
+        photos = request.FILES.getlist('upload_photos')
+        for p in photos:
+            photo_obj = UserImage.objects.create(
+                slug = os.urandom(6).hex(),
+                user = request.user,
+                image = p
+                )
+            photo_obj.save()
+
+    return redirect(request.META['HTTP_REFERER'])
