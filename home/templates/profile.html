@@ -8,6 +8,7 @@
     }
 
 
+
 </style>
 
 <body class="profile">
@@ -60,7 +61,8 @@
                                         <div class="profile-img-overlay"></div>
                                         {% endif %}
                                         <img src="{{ User_Profile.profile_pic.url }}" alt="Avatar"
-                                             class="avatar img-circle img-fluid" id = "profile_pic" style="object-fit:contain;">
+                                             class="avatar img-circle img-fluid" id="profile_pic"
+                                             style="object-fit:contain;">
                                         <form method="POST" action="/profile/{{request.user.username}}/update-profile"
                                               enctype="multipart/form-data">
                                             {% csrf_token %}
@@ -68,7 +70,8 @@
                                                 {% if User_Profile == request.user %}
                                                 <label class="upload" id='update_profile_pic'>
                                                     <i class='bx bxs-camera'></i> Update
-                                                    <input type="file" id="updateProfilePicInput_2" class="text-center upload" name="profile_image">
+                                                    <input type="file" id="updateProfilePicInput_2"
+                                                           class="text-center upload" name="profile_image">
                                                 </label>
                                                 {% endif %}
                                                 <div class="btn-group" id='update_button_group_1' style="display:none;">
@@ -92,17 +95,20 @@
                                 {% if User_Profile != request.user %}
                                 <div class="intro mt-4">
                                     <div class="d-flex">
+
                                         {% if Following %}
-                                        <form method="GET" action="/follow-unfollow-user">
-                                            <input hidden value='{{User_Profile.username}}' name="username">
+                                        <form method="POST" action="/follow-unfollow-user">
+                                            {% csrf_token %}
+                                            <input hidden value='{{User_Profile.username}}' name="u_name">
                                             <button type="submit" style="border-radius:50px;"
                                                     class="btn btn-md btn-outline-success mr-3">Following
                                             </button>
 
                                         </form>
                                         {% else %}
-                                        <form method="GET" action="/follow-unfollow-user">
-                                            <input hidden value='{{User_Profile.username}}' name="username">
+                                        <form method="POST" action="/follow-unfollow-user">
+                                            {% csrf_token %}
+                                            <input hidden value='{{User_Profile.username}}' name="u_name">
                                             <button type="submit" class="btn btn-outline-primary btn-md mr-3"
                                                     style="border-radius:50px"><i
                                                     class="bx bx-plus"></i>
@@ -112,39 +118,46 @@
                                         {% endif %}
 
                                         {% if Friend_Request_Sent %}
-                                        <form action="/send-friend-request" method="GET">
-                                            <input hidden name="addfriend_username"
+                                        <form action="/send-friend-request" method="POST">
+                                            {% csrf_token %}
+                                            <input hidden name="u_name"
                                                    value="{{searched_user.username}}">
                                             <button type="submit" class="btn btn-primary btn-md"
                                                     style="border-radius:50px;font-size:0.9rem;"><i
                                                     class='bx bx-user-check'></i>
-                                                Request sent
+                                                Sent
                                             </button>
                                         </form>
-
-                                        {% endif %}
-
-                                        {% if not Friend and not Friend_Request_Sent %}
-                                        <form method="GET" action='/send-friend-request'>
-                                            <input hidden name="addfriend_username" value="{{User_Profile.username}}">
+                                        {% elif Friend_Request_Got %}
+                                        <form action="/accept-friend-request" method="POST">
+                                            {% csrf_token %}
+                                            <input hidden name="u_name"
+                                                   value="{{User_Profile.username}}">
                                             <button type="submit" class="btn btn-primary btn-md"
-                                                    style="border-radius:50px;"
-                                            ><i class='bx bx-user-plus'></i>
-                                                <span>Add friend</span>
+                                                    style="border-radius:50px;font-size:0.9rem;"><i
+                                                    class='bx bx-user-check'></i>
+                                                Accept
+                                            </button>
+                                        </form>
+                                        {% elif request.user in User_Profile.user_friends.all %}
+                                        <form method="POST" action='/unfriend'>
+                                            {% csrf_token %}
+                                            <input hidden name="u_name" value="{{User_Profile.username}}">
+                                            <button type="submit" class="btn btn-primary btn-md"
+                                                    style="border-radius:50px;"><i class='bx bx-user-x'></i>
+                                                <span>Unfriend</span>
                                             </button>
                                         </form>
                                         {% else %}
-                                        <form method="GET" action='/unfriend'>
-                                            <input hidden name="username"
-                                                   value="{{User_Profile.username}}">
+                                        <form method="POST" action='/send-friend-request'>
+                                            {% csrf_token %}
+                                            <input hidden name="u_name" value="{{User_Profile.username}}">
                                             <button type="submit" class="btn btn-primary btn-md"
-                                                    style="border-radius:50px;"
-                                            ><i class='bx bx-user-x'></i>
-                                                Unfriend
+                                                    style="border-radius:50px;"><i class='bx bx-user-plus'></i>
+                                                Add Friend
                                             </button>
                                         </form>
                                         {% endif %}
-
 
                                         <button type="button" class="btn btn-follow" id="moreMobile"
                                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
@@ -251,7 +264,7 @@
                                                     <div class="form-group post-input">
                                                         <textarea class="form-control" name="description" id="postForm"
                                                                   rows="2"
-                                                                  placeholder="What's on your mind?"></textarea>
+                                                                  placeholder="What's on your mind, {{request.user.username}}?"></textarea>
                                                         <img src="#" id='photo_upload_1' style="display:none;"
                                                              class="img-fluid">
                                                         <video id="video_upload_1"
@@ -288,9 +301,6 @@
                                                         </div>
                                                         <script>
                                                        {% include 'photo_video_upload.js' %}
-
-
-
                                                         </script>
 
                                                         <a href="/profile/{{request.user.username}}"
@@ -352,8 +362,6 @@
 
                                         <!--                                        User Post Starts Here-->
                                         {% include 'user_post.html' %}
-
-
                                     </div>
                                 </div>
                             </div>

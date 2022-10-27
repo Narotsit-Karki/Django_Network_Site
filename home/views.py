@@ -34,15 +34,15 @@ with open('home/countries.txt', 'r') as country:
 
 class BaseView(LoginRequiredMixin, View):
     view = dict()
-    login_url = '/login'
+    login_url = '/accounts/login'
     redirect_field_name = '/login-info'
 
 
 # main homepage view
 class HomeView(BaseView):
-    def get_required_info(self,request):
-        self.view['Saved_Posts'] = SavedPost.objects.filter(user = request.user,is_saved = True).count()
-
+    def get_required_info(self, request):
+        self.view['Saved_Posts'] = SavedPost.objects.filter(user=request.user, is_saved=True).count()
+        self.view['User_Posts'] = UserPost.objects.filter(user = request.user)
     def get(self, request):
         self.view
         self.get_required_info(request)
@@ -64,11 +64,94 @@ def mark_as_read_delete(request):
     else:
         return HttpResponse('invalid request')
 
+
+class ProfileView(BaseView):
+
+    def get_user(self, request, username):
+        user_obj = UserProfile.objects.get(username=username)
+
+        following, friend, sent_friend_request, friend_request_got = False, False, False, False
+
+        # check if current user is following viewed user
+        if UserProfile.objects.filter(username=request.user.username, user_followers__in=[user_obj]).exists():
+            following = True
+        # check to see if current user is in viewed users friends list
+        if UserProfile.objects.filter(username=user_obj.username, user_friends__in=[request.user]).exists():
+            friend = True
+        # check to see if current user has sent friend request to the viewed user
+        elif FriendRequest.objects.filter(from_user=request.user, to_user=user_obj).exists():
+            sent_friend_request = True
+
+        elif FriendRequest.objects.filter(from_user= user_obj, to_user= request.user).exists():
+            friend_request_got = True
+
+        self.view['User_Profile'] = user_obj
+        self.view['Following'] = following
+        self.view['Friend'] = friend
+        self.view['Friend_Request_Sent'] = sent_friend_request
+        self.view['Friend_Request_Got'] = friend_request_got
+        # get user posts
+        self.view['User_Posts'] = UserPost.objects.filter(user=self.view['User_Profile']).order_by('-created_at')
+
+        # get hidden posts by the user
+        self.view['Hidden_Posts'] = HiddenPost.objects.filter(post__in=[post for post in self.view['User_Posts']],
+                                                              user=request.user, is_hidden=True, )
+        h_post_id = [h_post.post.id for h_post in self.view['Hidden_Posts']]
+        self.view['Hidden_Posts'] = UserPost.objects.filter(id__in=h_post_id)
+        print(self.view['Hidden_Posts'])
+
+    def get(self, request, username):
+        self.view
+        self.get_user(request, username)
+        return render(request, 'profile.html', self.view)
+
+
+class AboutView(ProfileView):
+    def get(self, request, username):
+        self.view
+        self.get_user(request, username)
+        return render(request, 'about.html', self.view)
+
+
+class FriendView(ProfileView):
+    def get(self, request, username):
+        self.get_user(request, username)
+        return render(request, 'friends.html', self.view)
+
+
+class FindFriendView(ProfileView):
+    def friend_suggestion(self,request):
+
+        if request.user.user_friends.count() > 0:
+            friend_suggestion_list = []
+            friends = request.user.user_friends.all()
+            for friend in friends:
+                for f_friend in friend.user_friends.all():
+                    if f_friend != request.user and f_friend not in request.user.user_friends.all():
+                        friend_suggestion_list.append(f_friend)
+
+            self.view['Friend_Suggestions'] = friend_suggestion_list
+        else:
+            self.view['Friend_Suggestions'] = UserProfile.objects.exclude(username = request.user.username).filter(city__icontains = request.user.city,country__icontains = request.user.country)
+
+    def get(self, request):
+        self.get_user(request, request.user.username)
+        self.friend_suggestion(request)
+        return render(request, 'find-friends.html', self.view)
+
+
+class PhotosView(ProfileView):
+    def get(self, request, username):
+        self.get_user(request, username)
+        self.view['User_Photos'] = UserImage.objects.filter(user=request.user).order_by('-date_uploaded')
+        return render(request, 'photos.html', self.view)
+
+
 class SignUpView(View):
     def post(self, request, *args, **kwargs):
         self.add_new_user(request)
         messages.success(request, 'Signed Up Successfully')
-        return redirect('/login')
+        return redirect('/accounts/login')
 
     def add_new_user(self, request):
         fname, lname = request.POST['fname'], request.POST['lname']
@@ -115,64 +198,7 @@ class SignUpView(View):
         return render(request, 'sign-up.html', signup_view)
 
 
-class ProfileView(BaseView):
-
-    def get_user(self, request, username):
-        user_obj = UserProfile.objects.get(username=username)
-
-        following, friend, sent_friend_request = False, False, False
-
-        # check if current user is following viewed user
-        if UserProfile.objects.filter(username=request.user.username, user_followers__in=[user_obj]).exists():
-            following = True
-        # check to see if current user is in viewed users friends list
-        if UserProfile.objects.filter(username=user_obj.username, user_friends__in=[request.user]).exists():
-            friend = True
-        # check to see if current user has sent friend request to the viewed user
-        elif FriendRequest.objects.filter(from_user=request.user, to_user=user_obj).exists():
-            sent_friend_request = True
-
-        self.view['User_Profile'] = user_obj
-        self.view['Following'] = following
-        self.view['Friend'] = friend
-        self.view['Friend_Request_Sent'] = sent_friend_request
-        # get user posts
-        self.view['User_Posts'] = UserPost.objects.filter(user=self.view['User_Profile']).order_by('-created_at')
-
-        # get hidden posts by the user
-        self.view['Hidden_Posts'] = HiddenPost.objects.filter(post__in = [post for post in self.view['User_Posts']],user = request.user, is_hidden = True,)
-        h_post_id = [h_post.post.id for h_post in self.view['Hidden_Posts']]
-        self.view['Hidden_Posts'] = UserPost.objects.filter(id__in = h_post_id)
-        print(self.view['Hidden_Posts'])
-
-    def get(self, request, username):
-        self.view
-        self.get_user(request, username)
-        return render(request, 'profile.html', self.view)
-
-
-
-
-class AboutView(ProfileView):
-    def get(self, request, username):
-        self.view
-        self.get_user(request, username)
-        return render(request, 'about.html', self.view)
-
-
-class FriendView(ProfileView):
-    def get(self, request, username):
-        self.get_user(request, username)
-        return render(request, 'friends.html', self.view)
-
-
-class PhotosView(ProfileView):
-    def get(self,request,username):
-        self.get_user(request, username)
-        self.view['User_Photos'] = UserImage.objects.filter(user = request.user).order_by('-date_uploaded')
-        return render(request, 'photos.html', self.view)
-
-
+# stores users saved posts
 class SavedView(ProfileView):
 
     def get(self, request, username):
@@ -188,26 +214,7 @@ def error_404(request, exception):
     return render(request, '404.html')
 
 
-@login_required
-def follow_unfollow_user(request):
-    if request.method == "GET":
-        username = request.GET['username']
-        follow_user = UserProfile.objects.get(username=username)
 
-        # if already followed unfollow else follow
-        if UserProfile.objects.filter(username=request.user.username, user_followers__in=[follow_user]).exists():
-            request.user.following.remove(follow_user)
-        else:
-            request.user.user_followers.add(follow_user)
-            notify.send(sender=request.user,
-                        recipient=follow_user,
-                        verb='bxs-group',
-                        description=notification_messsage['following-you']
-                        )
-
-        request.user.save()
-
-        return redirect(f'/profile/{username}')
 
 
 class SearchView(BaseView):
@@ -229,46 +236,46 @@ class SearchView(BaseView):
         profiles = UserProfile.objects.exclude(username=request.user.username).filter(
             reduce(operator.and_, (Q(username__icontains=x) for x in keyword)))
 
-        # get current users friend list to see if searched user is present or not
-        user_friend_requests = FriendRequest.objects.filter(to_user__in=list(profiles), from_user=request.user)
-
-        if user_friend_requests.count() == 0:
-            self.view['User_Friend_Requests'] = user_friend_requests
-        else:
-            self.view['User_Friend_Requests'] = UserProfile.objects.filter(
-                reduce(operator.and_, (Q(username=f.to_user.username) for f in user_friend_requests)))
-
-        # get searched users friend requests to see if current user is present there or not
-        searched_user_friend_requests = FriendRequest.objects.filter(from_user__in=list(profiles), to_user=request.user)
-
-        if searched_user_friend_requests.count() == 0:
-            self.view['Searched_User_Friend_Requests'] = searched_user_friend_requests
-        else:
-            self.view['Searched_User_Friend_Requests'] = UserProfile.objects.filter(
-                reduce(operator.and_, (Q(username=f.from_user.username) for f in searched_user_friend_requests)))
-
         self.view['Searched_Users'] = profiles
 
     def get(self, request):
         search = request.GET['search']
 
-        # getting User Friends as  query set for searching purpose
-        self.view['User_Friends'] = request.user.user_friends.get_queryset()
         self.search_algorithm(query=search, request=request)
         return render(request, 'search.html', self.view)
 
+@login_required
+def follow_unfollow_user(request):
+    if request.method == "POST":
+        username = request.POST['u_name']
+        follow_user = UserProfile.objects.get(username=username)
+
+        # if already followed unfollow else follow
+        if follow_user in request.user.user_followers.all():
+            request.user.user_followers.remove(follow_user)
+        else:
+            request.user.user_followers.add(follow_user)
+            notify.send(sender=request.user,
+                        recipient=follow_user,
+                        verb='bxs-group',
+                        description=notification_messsage['following-you']
+                        )
+
+        request.user.save()
+
+        return redirect(f'/profile/{username}')
 
 @login_required
 def send_friend_request_or_remove(request):
-    if request.method == "GET":
-        username = request.GET['addfriend_username']
+    if request.method == "POST":
+        username = request.POST['u_name']
         from_user = request.user
-        to_user = UserProfile.objects.get_object_or_404(username=username)
+        to_user = get_object_or_404(UserProfile, username=username)
 
         # check to see if not both users are friends already
         if UserProfile.objects.filter(username=from_user.username,
                                       user_friends__in=[to_user]).exists() or UserProfile.objects.filter(
-                username=to_user.username, friends__in=[from_user]).exists():
+            username=to_user.username, user_friends__in=[from_user]).exists():
             return redirect(request.META.get('HTTP_REFERER'))
 
         # send friend request
@@ -283,14 +290,12 @@ def send_friend_request_or_remove(request):
 
     return redirect(request.META.get('HTTP_REFERER'))
 
-
-
 @login_required
 def accept_friend_request(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         try:
-            from_username = request.GET['u_name']
-            from_user = UserProfile.objects.get(username=from_username)
+            from_username = request.POST['u_name']
+            from_user = get_object_or_404(UserProfile, username=from_username)
             friend_request = FriendRequest.objects.get(from_user=from_user, to_user=request.user)
 
             # add both of users as friends to each other
@@ -309,10 +314,23 @@ def accept_friend_request(request):
             # delete the friend request after being accepted
             friend_request.delete()
 
-        except Exception:  # for any concurrency problems
+        except Exception:
             pass
 
     return redirect(request.META.get("HTTP_REFERER"))
+
+@login_required
+def unfriend(request):
+    if request.method == "POST":
+        user_name = request.POST['u_name']
+        unfriend_user = get_object_or_404(UserProfile, username=user_name)
+        unfriend_user.user_friends.remove(request.user)
+        unfriend_user.user_followers.remove(request.user)
+        request.user.user_friends.remove(unfriend_user)
+        request.user.user_followers.remove(unfriend_user)
+
+    return redirect(request.META['HTTP_REFERER'])
+
 
 
 @login_required
@@ -356,10 +374,15 @@ def logout_information(request, slug):
 
     return redirect("/accounts/logout")
 
+
+
+
+
+# for updating user background image
 @login_required
-def update_background(request,username):
+def update_background(request, username):
     if request.method == "POST" and request.user.username == username:
-        user_obj = UserProfile.objects.get(username = username)
+        user_obj = UserProfile.objects.get(username=username)
         background_image = request.FILES.get('background_image')
         if os.path.exists(user_obj.background_pic.path):
             os.remove(user_obj.background_pic.path)
@@ -367,20 +390,20 @@ def update_background(request,username):
         user_obj.background_pic = background_image
         user_obj.save()
 
-
     return redirect(request.META['HTTP_REFERER'])
 
+
+# for updating user profile picture
 @login_required
-def update_profile_pic(request,username):
+def update_profile_pic(request, username):
     if request.method == "POST" and request.user.username == username:
-        user_obj = UserProfile.objects.get(username = username)
+        user_obj = UserProfile.objects.get(username=username)
         profile_image = request.FILES.get('profile_image')
         if os.path.exists(user_obj.profile_pic.path):
             os.remove(user_obj.profile_pic.path)
 
         user_obj.profile_pic = profile_image
         user_obj.save()
-
 
         if request.user.gender == "male":
             pronoun = 'his'
@@ -389,17 +412,17 @@ def update_profile_pic(request,username):
         else:
             pronoun = 'the'
 
-        #create a new post for updated profile
+        # create a new post for updated profile
         profile_update_post = UserPost.objects.create(
-            user = request.user,
-            slug = os.urandom(6).hex(),
-            post_image = profile_image,
-            snap_message = f"updated {pronoun} profile picture"
+            user=request.user,
+            slug=os.urandom(6).hex(),
+            post_image=profile_image,
+            snap_message=f"updated {pronoun} profile picture"
         )
         profile_update_post.save()
 
         # notify_all followers of user
-        notify.send(sender = request.user, recipient =request.user.user_followers.all(), verb  ='bxs-group', description = f"updated {pronoun} profile picture")
+        notify.send(sender=request.user, recipient=request.user.user_followers.all(), verb='bxs-group',
+                    description=f"updated {pronoun} profile picture")
 
     return redirect(request.META['HTTP_REFERER'])
-

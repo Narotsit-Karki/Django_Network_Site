@@ -144,8 +144,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 LOGIN_REDIRECT_URL = '/login-user'
-LOGOUT_REDIRECT_URL = '/login'
-LOGIN_URL='/login'
+LOGOUT_REDIRECT_URL = '/accounts/login'
+LOGIN_URL='/accounts/login'
 
 # for flash messages
 try:
@@ -192,3 +192,11 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 # DJANGO_NOTIFICATIONS_CONFIG = {
 #     'USE_JSONFIELD':True
 # }
+# for resseting email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = str(os.environ.get('EMAIL_USER'))
+EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_PASS'))
+

@@ -30,23 +30,17 @@
                         <div class="col-md-12">
                             {{ form.username.errors }}
                             <div class="form-group">
-<!--                                <input type="text" class="form-control" name="" placeholder="Email Address">-->
-
-                                    {{form.username}}
-
+                                {{form.username}}
                             </div>
                         </div>
                         <div class="col-md-12">
                             {{ form.password.errors }}
                             <div class="form-group">
-
                                 {{ form.password }}
-
-<!--                                <input type="password" class="form-control" name="" placeholder="Password">-->
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <a href="forgot-password.html">Forgot password?</a>
+                            <a href="/accounts/password_reset">Forgot password?</a>
                         </div>
                         <div class="col-md-6">
                             <label class="custom-control material-checkbox">

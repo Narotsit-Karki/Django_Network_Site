@@ -1,71 +1,39 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<style>
-#page-content-wrapper{
-    background: white;
-    }
-
-.people-nearby .google-maps{
-  background: white;
-  border-radius: 4px;
-  border: 1px solid #f1f2f2;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.people-nearby .google-maps .map{
-  height: 300px;
-  width: 100%;
-  border: none;
-}
-
-.people-nearby .nearby-user{
-  padding: 20px 10px;
-  border-top: 1px solid #f1f2f3;
-  border-bottom: 1px solid #f1f3f2;
-  margin-bottom: 20px;
-}
-
-img.profile-photo-lg{
-  height: 80px;
-  width: 80px;
-  border-radius: 50%;
-}
-.btn{
-        white-space: nowrap;
-        text-align : center;
-    }
-
-</style>
-
 <body class="newsfeed">
 <div class="container-fluid" id="wrapper">
     <div class="row newsfeed-size">
         <div class="col-md-12 newsfeed-right-side">
             {% include 'navbar_base.html' %}
             <div class="row newsfeed-right-side-content mt-3">
-                <div class="col-md-3 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper">
+                <div class="col-md-3 newsfeed-left-side sticky-top shadow-sm" id="sidebar-wrapper"
+                     style="postion:fixed;">
                     <div class="card newsfeed-user-card h-100">
                         <ul class="list-group list-group-flush newsfeed-left-sidebar">
                             <li class="list-group-item">
                                 <h6>Home</h6>
                             </li>
-
+                            <li class="list-group-item d-flex justify-content-between align-items-center sd-active">
+                                <a href="index.html" class="sidebar-item"><img
+                                        src="{% static 'assets/images/icons/left-sidebar/newsfeed.png' %}"
+                                        alt="newsfeed"> News Feed</a>
+                                <a href="#" class="newsfeedListicon"><i class='bx bx-dots-horizontal-rounded'></i></a>
+                            </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="/" class="sidebar-item"><img
+                                <a href="messages.html" class="sidebar-item"><img
                                         src="{% static 'assets/images/icons/left-sidebar/message.png' %}" alt="message">
                                     Messages</a>
                                 <span class="badge badge-primary badge-pill">2</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="/" class="sidebar-item"><img
+                                <a href="groups.html" class="sidebar-item"><img
                                         src="{% static 'assets/images/icons/left-sidebar/group.png' %}" alt="group">
                                     Groups</a>
                                 <span class="badge badge-primary badge-pill">17</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="/" class="sidebar-item"><img
+                                <a href="events.html" class="sidebar-item"><img
                                         src="{% static 'assets/images/icons/left-sidebar/event.png' %}" alt="event">
                                     Events</a>
                                 <span class="badge badge-primary badge-pill">3</span>
@@ -83,13 +51,13 @@ img.profile-photo-lg{
                                 <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="/" class="sidebar-item"><img
+                                <a href="matches.html" class="sidebar-item"><img
                                         src="{% static 'assets/images/icons/left-sidebar/matches.png' %}" alt="matches">
                                     Matches</a>
                                 <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="/" class="sidebar-item"><img
+                                <a href="teams.html" class="sidebar-item"><img
                                         src="{% static 'assets/images/icons/left-sidebar/team.png' %}"
                                         alt="find-friends"> Argon For Teams</a>
                                 <span class="badge badge-primary badge-pill"><i class='bx bx-chevron-right'></i></span>
@@ -98,57 +66,41 @@ img.profile-photo-lg{
                         </ul>
                     </div>
                 </div>
-
                 <div class="col-md-6 second-section" id="page-content-wrapper">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6 col-xs-6 fs-8">Search Results <span
-                                class="badge badge-pill badge-primary ml-2">{{ Searched_Users.count }}</span></div>
-                    </div>
-                    <div class="row">
-                        <h3 class='col-md-6 col-sm-6 col-xs-6 fs-8'> Peoples </h3>
-                    </div>
-                    <div class="row" style="overflow-y:scroll;height: 70%;">
-                        <div class="col-md-8">
-                            {% for searched_user in Searched_Users %}
-                            <div class="people-nearby">
-                                <div class="nearby-user">
-                                    <div class="row">
 
-                                        <div class="col-md-2 col-sm-2">
-                                            <a href="{% url 'profile' searched_user.username %}">
-                                                <img src="{{ searched_user.profile_pic.url }}" alt="user"
-                                                     class="profile-photo-lg">
-                                            </a>
-                                        </div>
-                                        <div class="col-md-7 col-sm-7">
-                                            <h5><a href="/profile/{{searched_user.username}}" class="profile-link">{{ searched_user.first_name}} {{searched_user.last_name}}</a></h5>
-                                            <a href="/profile/{{ searched_user.username }}"><span class="text-muted">@{{searched_user.username}}</span></a>
-                                            {% if searched_user.job|length != 0 %}
-                                            <p class="intro-title text-muted"><i
-                                                    class='bx bx-briefcase text-primary'></i> Works at <a href="#">{{search_user.job}}</a>
-                                            </p>
+                    <!-- Find Friends -->
+                    <div class="bg-white py-3 px-4 shadow-sm">
+                        <div class="card-head d-flex justify-content-between">
+                            <h5 class="mb-4">Find Friends</h5>
+                        </div>
+                        <div class="row">
+                            {% for friend in Friend_Suggestions %}
+                            <div class="col-md-4 col-sm-6">
+                                <div class="card group-card shadow-sm">
+                                    <img src="{{friend.profile_pic.url}}"
+                                         class="card-img-top group-card-image" alt="Friend image">
+                                    <div class="card-body">
+                                        {% if friend.username == request.user.username %}
+                                        <h5 class="card-text">@You</h5>
+                                        {% else %}
+                                        <h5 class="card-text">@{{friend.username}}</h5>
+                                        {% endif %}
 
-                                            {% endif %}
-                                            <p class="intro-title text-muted"><i class='bx bx-map text-primary'></i>
-                                                Lives in <a href="#">{{searched_user.city}},
-                                                    {{searched_user.country}}</a></p>
-
-
-                                        </div>
-                                        <div class="col-md-3 col-sm-3">
-                                                <button type="button" onclick="location.href='/profile/{{searched_user.username}}'" class="btn btn-primary pull-right"><i
-                                                        class="bx bxs-search"></i> <span
-                                                        class="fs-8">View</span>
-                                                </button>
+                                        <h5 class="card-title">{{friend.first_name}} {{friend.last_name}}
+                                        </h5>
+                                        <div class="btn-group w-100" role="group">
+                                            <a href="/profile/{{friend.username}}"
+                                               class="btn btn-quick-link join-group-btn border w-100">View</a>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-                        {% endfor %}
+                            {% endfor %}
+
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -210,6 +162,105 @@ img.profile-photo-lg{
     </div>
 </div>
 
+<!-- Chat Popup -->
+<!--
+    <div class="chat-popup shadow" id="hide-in-mobile">
+        <div class="row chat-window col-xs-5 col-md-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="top-bar shadow-sm d-flex align-items-center">
+                        <div class="col-md-6 col-xs-6">
+                            <a href="profile.html">
+                                <img src="assets/images/users/user-2.jpg" class="mr-2 chatbox-user-img" alt="Chat user image">
+                                <span class="panel-title">Karen Minas</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-xs-6 d-flex align-items-center justify-content-between">
+                            <a href="#">
+                                <img src="assets/images/icons/messenger/video-call.png" class="chatbox-call" alt="Chatbox contact types">
+                            </a>
+                            <a href="#" data-toggle="modal" data-target="#callModal">
+                                <img src="assets/images/icons/messenger/call.png" class="chatbox-call" alt="Chatbox contact types">
+                            </a>
+                            <a href="javascript:void(0)"><i id="minimize-chat-window" class="bx bx-minus icon_minim"></i></a>
+                            <a href="javascript:void(0)" id="close-chatbox"><i class="bx bx-x"></i></a>
+                        </div>
+                    </div>
+                    <div id="messagebody" class="msg_container_base">
+                        <div class="row msg_container base_sent">
+                            <div class="col-md-10 col-xs-10">
+                                <div class="messages message-reply bg-primary shadow-sm">
+                                    <p>Are you going to the party on Saturday?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_receive">
+                            <div class="col-md-10 col-xs-10">
+                                <div class="messages message-receive shadow-sm">
+                                    <p>I was thinking about it. Are you?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_receive">
+                            <div class="col-xs-10 col-md-10">
+                                <div class="messages message-receive shadow-sm">
+                                    <p>Really? Well, what time does it start?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_sent">
+                            <div class="col-xs-10 col-md-10">
+                                <div class="messages message-reply bg-primary shadow-sm">
+                                    <p>It starts at 8:00 pm, and I really think you should go.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_receive">
+                            <div class="col-xs-10 col-md-10">
+                                <div class="messages message-receive shadow-sm">
+                                    <p>Well, who else is going to be there?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_sent">
+                            <div class="col-md-10 col-xs-10">
+                                <div class="messages message-reply bg-primary shadow-sm">
+                                    <p>Everybody from school.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer chat-inputs">
+                        <div class="col-md-12 message-box">
+                            <input type="text" class="w-100 search-input type-message" placeholder="Type a message..." />
+                            <div class="chat-tools">
+                                <a href="#" class="chatbox-tools">
+                                    <img src="assets/images/icons/theme/post-image.png" class="chatbox-tools-img" alt="Chatbox tool">
+                                </a>
+                                <a href="#" class="chatbox-tools">
+                                    <img src="assets/images/icons/messenger/gif.png" class="chatbox-tools-img" alt="Chatbox tool">
+                                </a>
+                                <a href="#" class="chatbox-tools">
+                                    <img src="assets/images/icons/messenger/smile.png" class="chatbox-tools-img" alt="Chatbox tool">
+                                </a>
+                                <a href="#" class="chatbox-tools">
+                                    <img src="assets/images/icons/messenger/console.png" class="chatbox-tools-img" alt="Chatbox tool">
+                                </a>
+                                <a href="#" class="chatbox-tools">
+                                    <img src="assets/images/icons/messenger/attach-file.png" class="chatbox-tools-img" alt="Chatbox tool">
+                                </a>
+                                <a href="#" class="chatbox-tools">
+                                    <img src="assets/images/icons/messenger/photo-camera.png" class="chatbox-tools-img" alt="Chatbox tool">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+<!-- END Chat Popup -->
 
 <!-- Call modal -->
 <div id="callModal" class="modal fade call-modal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel"

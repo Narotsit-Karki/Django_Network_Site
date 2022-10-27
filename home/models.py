@@ -38,6 +38,13 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return f"{self.username}"
 
+    def friend_requests_sent(self):
+        requests = FriendRequest.objects.filter(from_user = self)
+        return [request.to_user for request in requests]
+
+    def friend_requests_got(self):
+        requests = FriendRequest.objects.filter(to_user=self)
+        return [request.from_user for request in requests]
 
     def last_seen(self):
         return cache.get(f'seen_{self.username}')

@@ -1,15 +1,2 @@
-from django.contrib.auth.forms import AuthenticationForm, UsernameField
-
+from django.contrib.auth.forms import AuthenticationForm, UsernameField, PasswordResetForm
 from django import forms
-
-
-# overwriting existing django form
-class UserLoginForm(AuthenticationForm):
-
-    def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-
-    username = UsernameField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Username'}))
-    password = forms.CharField(widget=forms.PasswordInput(
-        attrs={'class': 'form-control','placeholder': 'Password',}))

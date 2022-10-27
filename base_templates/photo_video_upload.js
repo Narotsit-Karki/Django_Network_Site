@@ -6,7 +6,7 @@
   document.getElementById("photo_1").value = "";
   document.querySelector("#photo_upload_1").style.display = 'none';
   document.querySelector("#video_upload_1").style.display = 'block';
-  document.querySelector("#cancel_post").style.display = 'block';
+  document.querySelector("#cancel_post").style.display = 'inline-block';
   document.querySelector("#video_upload_1").src = blobURL_1;
    }
 
@@ -17,7 +17,7 @@
   document.querySelector("#video_upload_1").src = '#';
   document.querySelector("#video_upload_1").style.display = 'none';
   document.querySelector("#photo_upload_1").style.display = 'block';
-  document.querySelector("#cancel_post").style.display = 'block';
+  document.querySelector("#cancel_post").style.display = 'inline-block';
   document.querySelector("#photo_upload_1").src = blobURL;
    }
 
