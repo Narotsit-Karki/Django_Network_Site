@@ -211,3 +211,22 @@ def add_photos(request,username):
             photo_obj.save()
 
     return redirect(request.META['HTTP_REFERER'])
+
+
+@login_required
+def delete_photos(request,username):
+
+    if request.method == "POST" and request.user.username == username:
+        delete_photos_list_slug = []
+        for photo in UserImage.objects.filter(user = request.user):
+                delete_photos_list_slug.append(request.POST.get(photo.slug))
+
+        for slug in delete_photos_list_slug:
+            if slug is not None:
+                try:
+                    del_photo = UserImage.objects.get(user = request.user,slug = slug)
+                    del_photo.delete()
+                except Exception:
+                    pass
+
+        return redirect(request.META['HTTP_REFERER'])

@@ -130,16 +130,17 @@
                                                    {% include 'photo_video_upload.js' %}
 
                                         </script>
+                                         <div class="col-md-3 text-right">
+                                        <button href="/profile/{{request.user.username}}" style="display:none;" id='cancel_post' class='btn btn-primary btn-sm'>
+                                            Cancel
+                                        </button>
+                                        </div>
                                         <div class="col-md-3 text-right" style="display:inline-block;">
                                             <button type="submit" class="btn btn-primary btn-sm">
                                                 Publish
                                             </button>
                                         </div>
-                                        <div class="col-md-3 text-right">
-                                        <button href="/profile/{{request.user.username}}" style="display:none;" id='cancel_post' class='btn btn-primary btn-sm'>
-                                            Cancel
-                                        </button>
-                                        </div>
+
 
                                     </div>
                                 </div>

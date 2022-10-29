@@ -25,7 +25,12 @@ class ProfileUser(admin.ModelAdmin):
 
 admin.site.register(UserProfile, ProfileUser)
 
-class LoginSession(admin.ModelAdmin):
+class LoginSessionAdmin(admin.ModelAdmin):
     list_display = ('user', 'login_date', 'device', 'device_type', 'browser' )
 
-admin.site.register(LoginSessionInfo,LoginSession)
+admin.site.register(LoginSessionInfo,LoginSessionAdmin)
+
+class FriendRequestAdmin(admin.ModelAdmin):
+    list_display = ('from_user','to_user')
+
+admin.site.register(FriendRequest,FriendRequestAdmin)

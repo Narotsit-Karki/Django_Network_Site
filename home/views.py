@@ -42,7 +42,10 @@ class BaseView(LoginRequiredMixin, View):
 class HomeView(BaseView):
     def get_required_info(self, request):
         self.view['Saved_Posts'] = SavedPost.objects.filter(user=request.user, is_saved=True).count()
-        self.view['User_Posts'] = UserPost.objects.filter(user = request.user)
+        users_post = [follower for follower in request.user.user_followers.all()]
+        users_post.append(request.user)
+        self.view['User_Posts'] = UserPost.objects.filter(user__in = users_post ).order_by('-created_at')
+
     def get(self, request):
         self.view
         self.get_required_info(request)
@@ -98,7 +101,7 @@ class ProfileView(BaseView):
                                                               user=request.user, is_hidden=True, )
         h_post_id = [h_post.post.id for h_post in self.view['Hidden_Posts']]
         self.view['Hidden_Posts'] = UserPost.objects.filter(id__in=h_post_id)
-        print(self.view['Hidden_Posts'])
+
 
     def get(self, request, username):
         self.view

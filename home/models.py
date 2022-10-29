@@ -61,7 +61,6 @@ class UserProfile(AbstractUser):
             return False
 
 
-
 class FriendRequest(models.Model):
     from_user = models.ForeignKey(UserProfile,related_name='from_user',on_delete=models.CASCADE)
     to_user = models.ForeignKey(UserProfile,related_name='to_user', on_delete=models.CASCADE)

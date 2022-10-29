@@ -12,7 +12,8 @@ urlpatterns = [
     path('post-comment/<slug>',post_comment, name = 'post-comment'),
     path('delete-comment/<slug>/<id>',delete_comment,name = 'delete-comment'),
     path('edit-comment/<slug>/<id>',edit_comment, name = 'edit-comment'),
-    path('add-photos/<username>',add_photos,name='add-photos')
+    path('add-photos/<username>',add_photos,name='add-photos'),
+path('delete-photos/<username>',delete_photos,name='add-photos')
 
 ]
 
