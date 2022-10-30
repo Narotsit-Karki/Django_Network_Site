@@ -4,10 +4,6 @@ from home.views import BaseView
 from home.models import *
 from .models import *
 from django.contrib.auth.hashers import check_password
-
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
 from django.contrib import messages
 import os
 
@@ -129,6 +125,7 @@ class LocationSettingsView(BaseView):
 
 
 class AddBillingView(BaseView):
+
     def get(self,request):
         self.view
         return render(request , 'add_billing_method.html',self.view)
@@ -162,7 +159,7 @@ class AddBillingView(BaseView):
 
 @login_required
 def set_primary_billing(request , slug):
-    try:
+    if request.method == "GET":
         selected_non_primary_billing = BillingMethod.objects.filter(slug = slug , user = request.user)
         if BillingMethod.objects.filter(user = request.user , is_primary = True).exists():
             current_primary_billing = BillingMethod.objects.filter(user = request.user , is_primary = True)
@@ -171,18 +168,13 @@ def set_primary_billing(request , slug):
         else:
             selected_non_primary_billing.update(is_primary = True)
 
-    except ObjectDoesNotExist:
-        raise Http404
-
     return redirect('/settings/billing-settings')
 
 @login_required
 def remove_billing(request , slug):
-    try:
+    if request.method == "GET":
         remove_billing = BillingMethod.objects.filter(user = request.user , slug = slug)
         remove_billing.delete()
-    except ObjectDoesNotExist:
-        raise Http404
 
     return redirect('/settings/billing-settings')
 

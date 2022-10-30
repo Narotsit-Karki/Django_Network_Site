@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/png" href="{% static 'assets/images/logo-16x16.png' %}" />
+    <link rel="icon" type="image/png" href="{% static 'assets/images/logo-16x16.png' %}"/>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Angalo - Social Network</title>
 
@@ -25,16 +25,18 @@
 {% block content %}
 
 {% endblock %}
-    <!-- Core -->
-    <script src="{% static 'assets/js/jquery/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'assets/js/popper/popper.min.js' %}"></script>
-    <script src="{% static 'assets/js/bootstrap/bootstrap.min.js' %}"></script>
-    <!-- Optional -->
-    <script type="text/javascript">
+<!-- Core -->
+<script src="{% static 'assets/js/jquery/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'assets/js/popper/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap/bootstrap.min.js' %}"></script>
+<!-- Optional -->
+<script type="text/javascript">
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
-    </script>
-    <script src="{% static 'assets/js/components/components.js' %}"></script>
-</body></html>
+
+</script>
+<script src="{% static 'assets/js/components/components.js' %}"></script>
+</body>
+</html>

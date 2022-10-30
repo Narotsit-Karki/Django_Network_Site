@@ -1,19 +1,14 @@
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-
 from django.contrib import messages
 import json
-
 from notifications.signals import notify
-
 from home.views import BaseView , ProfileView
 from home.models import UserProfile
 from .models import *
 import os
 from home.views import notification_messsage
 from django.shortcuts import get_object_or_404, redirect, render
-
 from django.db.models import Q
 # Create your views here.
 
@@ -21,7 +16,6 @@ from django.db.models import Q
 
 @login_required
 def like_unlike_post(request):
-
     if request.method == "POST":
         post = get_object_or_404(UserPost, slug=request.POST.get('post_slug'))
         reaction = request.POST.get('reaction')
@@ -85,13 +79,14 @@ def create_a_new_post(request):
 
 @login_required
 def save_unsave_post(request, slug):
-    post = get_object_or_404(UserPost, slug=slug)
-    save_post_obj, saved = SavedPost.objects.get_or_create(user=request.user, post=post, is_saved=True)
-    if saved:
-        messages.success(request, f'Post Saved from {{post.user.username}}')
-    else:
-        save_post_obj.is_saved = False
-        save_post_obj.save()
+    if request.method == "GET":
+        post = get_object_or_404(UserPost, slug=slug)
+        save_post_obj, saved = SavedPost.objects.get_or_create(user=request.user, post=post, is_saved=True)
+        if saved:
+            messages.success(request, f'Post Saved from {{post.user.username}}')
+        else: #if post was saved previously now we unsave it
+            save_post_obj.is_saved = False
+            save_post_obj.save()
 
     return redirect(request.META['HTTP_REFERER'])
 
@@ -99,23 +94,24 @@ def save_unsave_post(request, slug):
 
 @login_required
 def hide_unhide_post(request, slug):
-    post = get_object_or_404(UserPost, slug=slug)
-    save_post_obj, created = HiddenPost.objects.get_or_create(user=request.user, post=post, is_hidden=True)
-    # if the post was hidden unhide it
-    if not created:
-        save_post_obj.is_hidden = False
-        save_post_obj.save()
+    if request.method == "GET":
+        post = get_object_or_404(UserPost, slug=slug)
+        save_post_obj, created = HiddenPost.objects.get_or_create(user=request.user, post=post, is_hidden=True)
+        # if the post was hidden unhide it
+        if not created:
+            save_post_obj.is_hidden = False
+            save_post_obj.save()
 
     return redirect(request.META['HTTP_REFERER'])
 
 
+
 @login_required
 def delete_post(request, slug):
-    try:
+    if request.method == "GET":
         post = get_object_or_404(UserPost, user=request.user, slug=slug)
         post.delete()
-    except ObjectDoesNotExist:
-        pass
+
     return redirect(request.META['HTTP_REFERER'])
 
 
@@ -129,26 +125,32 @@ class EditPost(ProfileView):
             image_file = request.FILES.get('photo_upload')
             video_file = request.FILES.get('video_upload')
             post_obj = get_object_or_404(UserPost, user=request.user, slug=slug)
+
             if post_validity(description,image_file,video_file):
-                if post_obj.post_image:
+                #update post image by removing the old image and adding new one
+                if post_obj.post_image and image_file is not None:
                     if os.path.exists(post_obj.post_image.path):
                         os.remove(post_obj.post_image.path)
-                else:
-                    if os.path.exists(post_obj.post_video.path):
-                        os.remove(post_obj.post_video.path)
+                    post_obj.post_image = image_file
+                else:# update post video by removing the old video and adding new one
+                    if post_obj.post_video and video_file is not None:
+                        if os.path.exists(post_obj.post_video.path):
+                            os.remove(post_obj.post_video.path)
+                            post_obj.post_video = video_file
 
-                post_obj.description = description
-                post_obj.post_image = image_file
-                post_obj.post_video =  video_file
+                if description is not None: #update description
+                    post_obj.description = description
+
                 post_obj.save()
 
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(f"/profile/{request.user.username}")
 
     def get(self, request, slug):
         self.view
         post = get_object_or_404(UserPost, user=request.user, slug=slug)
         self.view['Edit_Post'] = post
         return render(request, 'edit-post.html', self.view)
+
 
 # validates space and blanks in comment
 def validate_comment(comment):

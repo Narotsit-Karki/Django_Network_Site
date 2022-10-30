@@ -20,7 +20,7 @@ urlpatterns = [
     path('profile/<username>/update-profile',update_profile_pic,name = 'profile-update-pp'),
 
     path('search',SearchView.as_view(),name = 'search'),
-    path('find-friends',FindFriendView.as_view(),name = 'find-frieds'),
+    path('find-friends',FindFriendView.as_view(),name = 'find-friends'),
 
     path('follow-unfollow-user',follow_unfollow_user,name = 'follow-unfollow'),
     path('send-friend-request',send_friend_request_or_remove,name = 'friend-request'),

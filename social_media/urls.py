@@ -26,5 +26,7 @@ urlpatterns = [
     path('inbox/notifications/',include('notifications.urls',namespace='notifications'))
 ]
 
-# url for handlind error
+# url for handling error
 handler404 = 'home.views.error_404'
+handler503 = 'home.views.error_503'
+handler403 = 'home.views.error_403'

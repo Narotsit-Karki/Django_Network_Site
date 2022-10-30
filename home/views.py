@@ -71,7 +71,7 @@ def mark_as_read_delete(request):
 class ProfileView(BaseView):
 
     def get_user(self, request, username):
-        user_obj = UserProfile.objects.get(username=username)
+        user_obj = get_object_or_404(UserProfile,username=username)
 
         following, friend, sent_friend_request, friend_request_got = False, False, False, False
 
@@ -212,16 +212,15 @@ class SavedView(ProfileView):
         return render(request, 'saved.html', self.view)
 
 
-# error 404
-def error_404(request, exception):
-    return render(request, '404.html')
+
+
 
 
 
 
 
 class SearchView(BaseView):
-
+    # removing any blank spaces and only getting words
     def search_algorithm(self, query, request):
         keyword = set()
 
@@ -385,7 +384,7 @@ def logout_information(request, slug):
 @login_required
 def update_background(request, username):
     if request.method == "POST" and request.user.username == username:
-        user_obj = UserProfile.objects.get(username=username)
+        user_obj = get_object_or_404(UserProfile,username=username)
         background_image = request.FILES.get('background_image')
         if os.path.exists(user_obj.background_pic.path):
             os.remove(user_obj.background_pic.path)
@@ -400,7 +399,7 @@ def update_background(request, username):
 @login_required
 def update_profile_pic(request, username):
     if request.method == "POST" and request.user.username == username:
-        user_obj = UserProfile.objects.get(username=username)
+        user_obj = get_object_or_404(UserProfile,username=username)
         profile_image = request.FILES.get('profile_image')
         if os.path.exists(user_obj.profile_pic.path):
             os.remove(user_obj.profile_pic.path)
@@ -429,3 +428,13 @@ def update_profile_pic(request, username):
                     description=f"updated {pronoun} profile picture")
 
     return redirect(request.META['HTTP_REFERER'])
+
+# error 404
+def error_404(request, exception):
+    return render(request, '404.html')
+#error 503
+def error_503(request,exception):
+    return render(request,'503.html')
+#error 403
+def error_403(request,exception):
+    return render(request,'403.html')
