@@ -28,5 +28,6 @@ urlpatterns = [
 
 # url for handling error
 handler404 = 'home.views.error_404'
-handler503 = 'home.views.error_503'
+handler500 = 'home.views.error_500'
 handler403 = 'home.views.error_403'
+handler_400 = 'home.view.error_400'

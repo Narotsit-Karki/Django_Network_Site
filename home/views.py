@@ -430,11 +430,11 @@ def update_profile_pic(request, username):
     return redirect(request.META['HTTP_REFERER'])
 
 # error 404
-def error_404(request, exception):
+def error_404(request, *args, **kwargs):
     return render(request, '404.html')
 #error 503
-def error_503(request,exception):
+def error_503(request,*args,**kwargs):
     return render(request,'503.html')
 #error 403
-def error_403(request,exception):
+def error_403(request,*args,**kwargs):
     return render(request,'403.html')
